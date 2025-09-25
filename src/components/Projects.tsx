@@ -8,74 +8,118 @@ import { ExternalLink, Github, Play } from "lucide-react";
 const Projects = () => {
   const projects = [
     {
-      title: "Route Forecasting & CV for Bus Fleet",
-      subtitle: "Forecast ridership & revenue + assign optimal trips to increase utilization",
-      description: "XGBoost forecasting with <3% error and CV model that improved ticket collection by 14%",
-      tech: ["Python", "XGBoost", "OpenCV", "AWS", "NumPy"],
-      category: "ML",
-      metrics: "<3% forecast error, 14% revenue improvement",
-      github: "https://github.com/IshaanBhatt23",
-      demo: null,
-      highlights: ["Feature engineering with holiday flags", "GA optimization for trip assignment", "Real-time CV tracking system"]
+      title: "Beatbox Sound Classifier",
+      subtitle: "Classify beatbox sounds (kick, hi-hats, snare, clops) with ML",
+      description: "MFCC feature extraction with neural network for real-time beatbox sound classification",
+      tech: ["Python", "Librosa", "TensorFlow", "NumPy", "Jupyter"],
+      category: "Audio",
+      metrics: "Multi-class audio classification",
+      github: "https://github.com/IshaanBhatt23/Beatbox-Sound-Classifier",
+      highlights: ["MFCC feature extraction", "Real-time classification", "Dataset included in README"]
     },
     {
       title: "Virtual Theremin",
-      subtitle: "A webcam-based virtual theremin controlled by hand gestures",
-      description: "Real-time hand tracking mapped to sine wave frequency/amplitude using OpenCV",
+      subtitle: "Webcam hand-tracking → WebAudio sound synthesis demo",
+      description: "Interactive theremin controlled by hand gestures using computer vision",
       tech: ["OpenCV", "Python", "WebAudio", "NumPy", "Flask"],
-      category: "Audio",
-      metrics: "~72% gesture accuracy",
-      github: "https://github.com/IshaanBhatt23/Virtual-Thermin",
-      demo: "/demos/theremin",
-      highlights: ["Low-latency hand tracking", "Real-time audio synthesis", "Browser-based demo"]
-    },
-    {
-      title: "Beatbox Sound Classifier",
-      subtitle: "Classify beatbox sounds into categories with a small neural network",
-      description: "MFCC feature extraction with sequential NN for real-time beatbox sound classification",
-      tech: ["Librosa", "TensorFlow", "NumPy", "Gradio", "Python"],
-      category: "Audio",
-      metrics: "~72% accuracy on 250+ samples",
-      github: "https://github.com/IshaanBhatt23/Beatbox-Sound-Classifier",
-      demo: "/demos/beatbox",
-      highlights: ["MFCC feature extraction", "Real-time classification", "Interactive demo interface"]
-    },
-    {
-      title: "2D→3D Pipeline",
-      subtitle: "Convert 2D images to exportable 3D .obj models using diffusion + PyTorch3D",
-      description: "MIT Hackathon special mention project using Hugging Face Diffusers and PyTorch3D",
-      tech: ["PyTorch3D", "Hugging Face", "Trimesh", "Diffusers", "Python"],
       category: "CV",
-      metrics: "Special mention award",
-      github: "https://github.com/IshaanBhatt23",
-      demo: "/demos/3d-pipeline",
-      highlights: ["Diffusion-based 3D generation", "Exportable .obj format", "3D model viewer integration"]
+      metrics: "Real-time hand tracking",
+      github: "https://github.com/IshaanBhatt23/Virtual-Thermin",
+      highlights: ["Hand gesture recognition", "Audio synthesis", "Interactive demo"]
     },
     {
-      title: "Text Summarizer & Q/A Bot",
-      subtitle: "Document summarization + Q/A using transformer stacks and a Gradio interface",
-      description: "Interactive document processing with transformer-based summarization and Q&A",
-      tech: ["Transformers", "Gradio", "PyTorch", "NLTK", "Python"],
+      title: "Generative 3D Jewellery Design",
+      subtitle: "2D→3D pipeline with exportable .obj outputs",
+      description: "Generate 3D jewelry models from 2D designs using generative AI techniques",
+      tech: ["PyTorch3D", "Point-E", "Trimesh", "Python"],
+      category: "3D",
+      metrics: "Exportable .obj models",
+      github: "https://github.com/IshaanBhatt23/Generative-3D-Jewellery-Design",
+      highlights: ["2D to 3D conversion", "Exportable formats", "Generative modeling"]
+    },
+    {
+      title: "Document Summarizer & Q/A",
+      subtitle: "Transformer-based document processing with Q/A capabilities",
+      description: "Interactive document summarization and question-answering system",
+      tech: ["Transformers", "Python", "NLTK", "Jupyter"],
       category: "NLP",
-      metrics: "High ROUGE scores",
+      metrics: "Transformer-based processing",
       github: "https://github.com/IshaanBhatt23/Summarise-and-Ask",
-      demo: "/demos/summarizer",
-      highlights: ["Multi-document support", "Interactive Q&A interface", "Transformer-based architecture"]
+      highlights: ["Document summarization", "Q&A interface", "Transformer architecture"]
+    },
+    {
+      title: "Stock Price Predictor",
+      subtitle: "Time-series forecasting for stock market prediction",
+      description: "Machine learning models for predicting stock prices using historical data",
+      tech: ["Python", "Pandas", "Scikit-learn", "Matplotlib"],
+      category: "Finance",
+      metrics: "Time-series forecasting",
+      github: "https://github.com/IshaanBhatt23/Stocks-Predictor",
+      highlights: ["Time series analysis", "Market prediction", "Data visualization"]
+    },
+    {
+      title: "Movie Recommendation System",
+      subtitle: "Collaborative and content-based recommendation engine",
+      description: "ML-powered movie recommendation system with multiple filtering approaches",
+      tech: ["Python", "Pandas", "Scikit-learn", "NumPy"],
+      category: "ML Systems",
+      metrics: "Recommendation algorithms",
+      github: "https://github.com/IshaanBhatt23/Movie-Recommendation-System",
+      highlights: ["Collaborative filtering", "Content-based filtering", "User preference analysis"]
+    },
+    {
+      title: "Heart Disease Predictor",
+      subtitle: "Classification model for heart disease prediction",
+      description: "Machine learning model to predict heart disease risk based on medical indicators",
+      tech: ["Python", "Scikit-learn", "Pandas", "Matplotlib"],
+      category: "Healthcare",
+      metrics: "Medical classification",
+      github: "https://github.com/IshaanBhatt23/Heart-Disease-Predictor",
+      highlights: ["Medical data analysis", "Risk prediction", "Model evaluation"]
+    },
+    {
+      title: "Coffee Shop Sales Analytics",
+      subtitle: "Sales analysis with data cleaning, charts, and business insights",
+      description: "Comprehensive business analytics dashboard for coffee shop sales data",
+      tech: ["Python", "Pandas", "Matplotlib", "Seaborn"],
+      category: "Analytics",
+      metrics: "Business intelligence",
+      github: "https://github.com/IshaanBhatt23/Coffee-Shop-Sales",
+      highlights: ["Data cleaning", "Business insights", "Visualization dashboard"]
     },
     {
       title: "GeoChallenge Game",
-      subtitle: "Geography quiz game with fuzzy matching and multiple game modes",
-      description: "Interactive geography game with intelligent fuzzy matching for user answers",
-      tech: ["JavaScript", "Python", "Fuzzy Logic", "Game Design"],
+      subtitle: "Geography quiz with fuzzy matching and multiple game modes",
+      description: "Interactive geography game with intelligent answer matching",
+      tech: ["JavaScript", "Python", "Fuzzy Logic"],
       category: "Game",
-      metrics: "Multiple game modes",
+      metrics: "Interactive gaming",
       github: "https://github.com/IshaanBhatt23/GeoChallenge",
-      demo: "/demos/geochallenge",
-      highlights: ["Fuzzy string matching", "Multiple difficulty levels", "Interactive game mechanics"]
+      highlights: ["Fuzzy string matching", "Multiple game modes", "Interactive gameplay"]
+    },
+    {
+      title: "Gender Classifier",
+      subtitle: "Computer vision model for gender classification",
+      description: "Image classification model with saved artifacts for gender prediction",
+      tech: ["Python", "OpenCV", "TensorFlow", "NumPy"],
+      category: "CV",
+      metrics: "Image classification",
+      github: "https://github.com/IshaanBhatt23/Gender-Classifier",
+      highlights: ["Image processing", "Classification model", "Saved model artifacts"]
+    },
+    {
+      title: "Mine vs Rock Classifier",
+      subtitle: "Binary classification for sonar data analysis",
+      description: "Teaching project for binary classification using sonar data",
+      tech: ["Python", "Scikit-learn", "Pandas"],
+      category: "Audio",
+      metrics: "Binary classification",
+      github: "https://github.com/IshaanBhatt23/Mine-vs-rock-classifier",
+      highlights: ["Sonar data analysis", "Binary classification", "Educational project"]
     }
   ];
 
-  const categories = ["All", "ML", "Audio", "CV", "NLP", "Game"];
+  const categories = ["All", "Audio", "CV", "3D", "NLP", "Finance", "ML Systems", "Healthcare", "Analytics", "Game"];
   const [selectedCategory, setSelectedCategory] = React.useState("All");
 
   const filteredProjects = selectedCategory === "All" 
@@ -139,12 +183,7 @@ const Projects = () => {
                       {project.category}
                     </Badge>
                     <div className="flex gap-2">
-                      {project.demo && (
-                        <Button size="sm" variant="ghost" className="p-2">
-                          <Play className="w-4 h-4" />
-                        </Button>
-                      )}
-                      <Button size="sm" variant="ghost" className="p-2">
+                      <Button size="sm" variant="ghost" className="p-2" asChild>
                         <a href={project.github} target="_blank" rel="noopener noreferrer">
                           <Github className="w-4 h-4" />
                         </a>
@@ -189,16 +228,10 @@ const Projects = () => {
                     </div>
 
                     <div className="flex gap-2 pt-4">
-                      {project.demo && (
-                        <Button size="sm" className="flex-1">
-                          <Play className="w-4 h-4 mr-2" />
-                          Try Demo
-                        </Button>
-                      )}
-                      <Button size="sm" variant="outline" className="flex-1">
-                        <a href={project.github} target="_blank" rel="noopener noreferrer" className="flex items-center">
-                          <ExternalLink className="w-4 h-4 mr-2" />
-                          View Code
+                      <Button size="sm" className="flex-1" asChild>
+                        <a href={project.github} target="_blank" rel="noopener noreferrer">
+                          <Github className="w-4 h-4 mr-2" />
+                          See Project
                         </a>
                       </Button>
                     </div>

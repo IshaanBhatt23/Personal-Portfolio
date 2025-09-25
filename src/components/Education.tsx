@@ -28,40 +28,76 @@ const Education = () => {
 
   const certifications = [
     {
-      title: "Google AI Essentials",
+      title: "Google AI Essentials Specialization",
       issuer: "Google",
       date: "Aug 2025",
-      badge: "google-ai"
+      credentialId: "QYZX68S1RFBK"
     },
     {
-      title: "IBM AI Product Manager",
+      title: "IBM AI Product Manager Specialization",
       issuer: "IBM",
       date: "Aug 2025",
-      badge: "ibm-ai"
+      credentialId: "BVB7HW12W969"
     },
     {
       title: "Machine Learning",
       issuer: "Columbia University",
       date: "Aug 2025",
-      badge: "columbia-ml"
+      credentialId: "402b927e-11ef-4c78-a6cc-9d4252a56bb7"
     },
     {
-      title: "Data Science Professional",
+      title: "Data Science Orientation",
       issuer: "IBM",
       date: "Aug 2025",
-      badge: "ibm-ds"
+      credentialId: "0427bb1e-0941-4285-b5d2-f539e6a2bc04"
     },
     {
-      title: "Business Analytics",
+      title: "Business Analytics for Decision Making",
       issuer: "University of Colorado Boulder",
       date: "Jan 2025",
-      badge: "cu-analytics"
+      credentialId: "04CK75JNYU15"
     },
     {
-      title: "Strategy & Game Theory",
+      title: "Strategy and Game Theory for Management",
       issuer: "IIM Ahmedabad",
       date: "Jan 2025",
-      badge: "iim-strategy"
+      credentialId: "ESC05PTBJZCQ"
+    },
+    {
+      title: "AWS Academy Cloud Architecting",
+      issuer: "Amazon Web Services (AWS)",
+      date: "Dec 2024",
+      credentialId: "369e7279-74bd-44aa-add1-caf93eec8d15"
+    },
+    {
+      title: "Data Science Project Capstone: Predicting Bicycle Rental",
+      issuer: "University of London",
+      date: "Aug 2025",
+      credentialId: "4WY8MZ5CYBQ2"
+    },
+    {
+      title: "Generative AI: Foundation Models and Platforms",
+      issuer: "IBM",
+      date: "Aug 2025",
+      credentialId: "SPB2XRO1FC4Z"
+    },
+    {
+      title: "Python for Data Science, AI & Development",
+      issuer: "IBM",
+      date: "Aug 2025",
+      credentialId: "NLVRTTHJTTMZ"
+    },
+    {
+      title: "Introduction to Applied Business Analytics",
+      issuer: "University of Illinois Urbana-Champaign",
+      date: "Aug 2025",
+      credentialId: "FQJMLC4CJ0GM"
+    },
+    {
+      title: "Generative AI: Prompt Engineering Basics",
+      issuer: "IBM",
+      date: "Aug 2025",
+      credentialId: "PDWMLVPVHPAN"
     }
   ];
 
@@ -166,9 +202,9 @@ const Education = () => {
                         <div className="w-12 h-12 bg-gradient-to-r from-accent to-purple rounded-lg flex items-center justify-center">
                           <Award className="w-6 h-6 text-white" />
                         </div>
-                        <Button size="sm" variant="ghost">
-                          <ExternalLink className="w-4 h-4" />
-                        </Button>
+                        <div className="text-xs text-muted-foreground">
+                          ID: {cert.credentialId}
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -184,14 +220,10 @@ const Education = () => {
               className="text-center mt-8"
             >
               <Card className="glass-card p-6">
-                <h4 className="text-lg font-semibold mb-4">Certificate Viewer</h4>
-                <p className="text-muted-foreground mb-4">
-                  View all certificates and credentials in detail
+                <h4 className="text-lg font-semibold mb-4">32+ Professional Certifications</h4>
+                <p className="text-muted-foreground">
+                  Comprehensive training in AI/ML, Data Science, Cloud Architecture, and Product Management from leading institutions
                 </p>
-                <Button variant="outline">
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  View All Certificates
-                </Button>
               </Card>
             </motion.div>
           </motion.div>

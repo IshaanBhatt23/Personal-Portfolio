@@ -90,7 +90,7 @@ const Hero = () => {
             transition={{ delay: 0.4 }}
             className="text-2xl md:text-3xl font-semibold text-muted-foreground mb-8"
           >
-            AI / ML Engineer & Audio-Tech Creator
+            AI / ML Developer & Audio-Tech Enthusiast
           </motion.h2>
 
           {/* Subheadline */}
@@ -100,7 +100,7 @@ const Hero = () => {
             transition={{ delay: 0.5 }}
             className="text-lg md:text-xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed"
           >
-            Building ML systems and audio experiences that solve real problems — from ridership forecasting to beatbox classification.
+            Building AI/ML models and audio experiences that solve real problems.
           </motion.p>
 
           {/* CTA Buttons */}
@@ -117,9 +117,9 @@ const Hero = () => {
             </Button>
             
             <Button variant="outline" size="lg" className="hover:scale-105 transition-transform">
-              <a href="/resume.pdf" download className="flex items-center gap-2">
+              <a href="/Ishaan-Bhatt_Resume.pdf" download className="flex items-center gap-2">
                 <Download className="w-5 h-5" />
-                Download CV
+                Download Resume
               </a>
             </Button>
           </motion.div>

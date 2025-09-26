@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, MapPin, Award, Users } from "lucide-react";
+import { Calendar, MapPin, Award } from "lucide-react";
 
 const Experience = () => {
   const experiences = [
@@ -9,7 +9,7 @@ const Experience = () => {
       title: "AI/ML Intern",
       company: "Katch GO",
       period: "June 2025 – Present",
-      location: "Remote",
+      location: "On-Site",
       type: "Internship",
       achievements: [
         "Trained XGBoost models to forecast daily ridership and revenue with <3% average error",
@@ -34,11 +34,12 @@ const Experience = () => {
     {
       title: "Country Ambassador",
       company: "Global AI Hackathon",
-      period: "2024 – Present",
+      collaboration: "(in collaboration with MIT Sloan AI Club)",
+      period: "July 2025 – Present",
       location: "India",
       type: "Leadership",
       achievements: [
-        "Drove outreach across India (400+ student registrations across 7 engineering colleges)",
+        "Drove outreach across India, targeting Gujarat (across 7 engineering colleges)",
         "Led technical onboarding and community growth initiatives",
         "Recognized among Top 3 global ambassadors for outstanding performance"
       ],
@@ -50,8 +51,8 @@ const Experience = () => {
     {
       title: "MIT Global AI Hackathon",
       achievement: "Special Mention",
-      description: "2D→3D pipeline using Hugging Face Diffusers, PyTorch3D, Trimesh; exportable .obj output",
-      year: "2024"
+      description: "Built a pipeline with Hugging Face Diffusers, PyTorch3D and Trimesh to convert 2D images to 3D exportable models. Got a special mention for “Relevant Approach” for innovative solution and export ready .obj output.",
+      year: "2025"
     }
   ];
 
@@ -69,7 +70,7 @@ const Experience = () => {
             Experience & <span className="gradient-text">Achievements</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Building ML systems, leading communities, and solving real-world problems
+            Building ML systems, leading communities and solving real-world problems
           </p>
         </motion.div>
 
@@ -90,7 +91,12 @@ const Experience = () => {
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                       <div>
                         <CardTitle className="text-xl mb-2">{exp.title}</CardTitle>
-                        <h4 className="text-lg font-semibold text-accent mb-2">{exp.company}</h4>
+                        <div className="flex flex-wrap items-center gap-x-2">
+                          <h4 className="text-lg font-semibold text-accent">{exp.company}</h4>
+                          {exp.collaboration && (
+                            <span className="text-md text-muted-foreground">{exp.collaboration}</span>
+                          )}
+                        </div>
                       </div>
                       <div className="flex flex-col sm:flex-row gap-2">
                         <Badge variant="outline" className="flex items-center gap-1">
@@ -134,7 +140,7 @@ const Experience = () => {
 
         {/* Hackathon Achievements */}
         <div className="max-w-4xl mx-auto">
-          <h3 className="text-2xl font-semibold mb-8">Hackathon Achievements</h3>
+          <h3 className="text-2xl font-semibold mb-8">Hackathon Achievement</h3>
           <div className="grid gap-6">
             {hackathonAchievements.map((achievement, index) => (
               <motion.div
@@ -142,7 +148,7 @@ const Experience = () => {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: 0.3 }}
+                transition={{ delay: 0.3 + index * 0.1 }}
               >
                 <Card className="glass-card hover:shadow-glow transition-all duration-300">
                   <CardContent className="p-6">

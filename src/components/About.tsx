@@ -7,7 +7,7 @@ const About = () => {
     {
       icon: <Cpu className="w-6 h-6" />,
       label: "Favorite tool",
-      value: "PyTorch / Hugging Face"
+      value: "Tensorflow/PyTorch"
     },
     {
       icon: <Coffee className="w-6 h-6" />,
@@ -45,11 +45,7 @@ const About = () => {
               className="space-y-6"
             >
               <p className="text-lg leading-relaxed text-muted-foreground">
-                I'm a <strong className="text-foreground">B.Tech (CSE) student (Class of 2026)</strong> passionate about applying ML to real-world problems — especially at the intersection of audio and vision. I enjoy turning messy data into production-ready models and interactive demos that people can experience.
-              </p>
-              
-              <p className="text-lg leading-relaxed text-muted-foreground">
-                My recent work includes <strong className="text-accent">low-error ridership forecasting</strong> and a computer vision system that improved ticket collection by <strong className="text-accent">14%</strong>. I also lead community outreach for the MIT Global AI Hackathon in India, building collaborations and technical onboarding for hundreds of participants.
+                I'm a <strong className="text-foreground">B.Tech (CSE) student (2026)</strong> passionate about applying ML to real-world problems, especially at the intersection of audio and vision. I enjoy turning messy data into production-ready models and interactive demos that people can experience.
               </p>
             </motion.div>
 

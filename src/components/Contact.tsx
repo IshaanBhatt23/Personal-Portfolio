@@ -5,9 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Mail, Phone, Linkedin, Github, MapPin, Send } from "lucide-react";
+import { Mail, Phone, Linkedin, Github, Instagram, MapPin, Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const Contact = () => {
@@ -17,7 +15,6 @@ const Contact = () => {
     email: "",
     subject: "",
     message: "",
-    consent: false
   });
 
   const contactInfo = [
@@ -44,40 +41,73 @@ const Contact = () => {
       label: "GitHub",
       value: "github.com/IshaanBhatt23",
       href: "https://github.com/IshaanBhatt23"
+    },
+    { 
+      icon: <Instagram className="w-5 h-5" />,
+      label: "Instagram",
+      value: "instagram.com/ishaan79._",
+      href: "https://instagram.com/ishaan79._"
     }
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.consent) {
+    // Prepare the data to be sent
+    const dataToSend = {
+      ...formData,
+      access_key: "441920ce-4fa9-4945-9935-4040eb23904e" // Your access key is now here
+    };
+
+    // Show a "sending" toast
+    toast({
+      title: "Sending Message...",
+      description: "Please wait.",
+    });
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json"
+        },
+        body: JSON.stringify(dataToSend)
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        toast({
+          title: "Message Sent!",
+          description: "Thanks! I'll get back to you within 3 business days.",
+        });
+        // Reset form on success
+        setFormData({
+          name: "",
+          email: "",
+          subject: "",
+          message: "",
+        });
+      } else {
+        // Show error toast from Web3Forms
+        toast({
+          title: "Error",
+          description: result.message || "An error occurred.",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      // Show generic error toast
       toast({
-        title: "Consent Required",
-        description: "Please consent to storing your contact information.",
+        title: "Error",
+        description: "An error occurred while sending the message.",
         variant: "destructive"
       });
-      return;
     }
-
-    // Here you would typically send the form data to your backend
-    console.log("Form submitted:", formData);
-    
-    toast({
-      title: "Message Sent!",
-      description: "Thanks! I'll get back to you within 3 business days.",
-    });
-    
-    // Reset form
-    setFormData({
-      name: "",
-      email: "",
-      subject: "",
-      message: "",
-      consent: false
-    });
   };
 
-  const handleInputChange = (field: string, value: string | boolean) => {
+  const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -95,7 +125,7 @@ const Contact = () => {
             Let's <span className="gradient-text">Connect</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-4">
-            Available for internships & ML collaborations — let's chat!
+            Available for opportunities & collaborations — let's chat!
           </p>
           <div className="flex items-center justify-center gap-2 text-muted-foreground">
             <MapPin className="w-4 h-4" />
@@ -141,17 +171,12 @@ const Contact = () => {
 
                   <div className="space-y-2">
                     <Label htmlFor="subject">Subject</Label>
-                    <Select value={formData.subject} onValueChange={(value) => handleInputChange("subject", value)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a subject" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="hiring">Hiring</SelectItem>
-                        <SelectItem value="collaboration">Collaboration</SelectItem>
-                        <SelectItem value="speaking">Speaking</SelectItem>
-                        <SelectItem value="student-query">Student Query</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <Input
+                      id="subject"
+                      value={formData.subject}
+                      onChange={(e) => handleInputChange("subject", e.target.value)}
+                      required
+                    />
                   </div>
 
                   <div className="space-y-2">
@@ -161,20 +186,9 @@ const Contact = () => {
                       rows={5}
                       value={formData.message}
                       onChange={(e) => handleInputChange("message", e.target.value)}
-                      placeholder="Tell me about your project or opportunity..."
+                      placeholder=""
                       required
                     />
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="consent"
-                      checked={formData.consent}
-                      onCheckedChange={(checked) => handleInputChange("consent", checked as boolean)}
-                    />
-                    <Label htmlFor="consent" className="text-sm">
-                      I consent to storing my contact information
-                    </Label>
                   </div>
 
                   <Button type="submit" className="w-full bg-gradient-to-r from-accent to-purple">
@@ -223,41 +237,7 @@ const Contact = () => {
                 ))}
               </CardContent>
             </Card>
-
-            {/* Quick Hire Template */}
-            <Card className="glass-card">
-              <CardHeader>
-                <CardTitle className="text-xl">Quick Hire Template</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="bg-muted/50 p-4 rounded-lg text-sm">
-                  <p className="font-semibold mb-2">Subject: Opportunity for ML Engineer role — [Company]</p>
-                  <div className="text-muted-foreground space-y-2">
-                    <p>Hi Ishaan,</p>
-                    <p>I'm [Name] from [Company]. We saw your work on [project]. I'd love to discuss a role where you could apply XGBoost and CV skills to [problem]. Are you free for a 20-minute call next week?</p>
-                    <p>Best, [Name] — [Company]</p>
-                  </div>
-                </div>
-                <Button 
-                  variant="outline" 
-                  className="w-full mt-4"
-                  onClick={() => {
-                    navigator.clipboard.writeText(`Subject: Opportunity for ML Engineer role — [Company]
-
-Hi Ishaan,
-I'm [Name] from [Company]. We saw your work on [project]. I'd love to discuss a role where you could apply XGBoost and CV skills to [problem]. Are you free for a 20-minute call next week?
-
-Best, [Name] — [Company]`);
-                    toast({
-                      title: "Template Copied!",
-                      description: "Email template copied to clipboard.",
-                    });
-                  }}
-                >
-                  Copy Template
-                </Button>
-              </CardContent>
-            </Card>
+            
           </motion.div>
         </div>
       </div>

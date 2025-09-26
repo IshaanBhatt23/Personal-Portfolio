@@ -9,8 +9,8 @@ const Skills = () => {
       title: "Languages",
       skills: [
         { name: "Python", level: 95 },
-        { name: "Java", level: 85 },
-        { name: "C", level: 80 },
+        { name: "Java", level: 75 },
+        { name: "C", level: 65 },
         { name: "SQL", level: 85 },
         { name: "HTML/CSS", level: 90 }
       ]
@@ -30,7 +30,7 @@ const Skills = () => {
     {
       title: "Tools & Cloud",
       skills: [
-        { name: "AWS", level: 85 },
+        { name: "AWS", level: 70 },
         { name: "Jupyter/Colab", level: 95 },
         { name: "Power BI", level: 80 },
         { name: "Gradio", level: 88 },

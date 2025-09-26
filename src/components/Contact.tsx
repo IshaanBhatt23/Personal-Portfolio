@@ -53,13 +53,11 @@ const Contact = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Prepare the data to be sent
     const dataToSend = {
       ...formData,
-      access_key: "441920ce-4fa9-4945-9935-4040eb23904e" // Your access key is now here
+      access_key: "441920ce-4fa9-4945-9935-4040eb23904e" 
     };
 
-    // Show a "sending" toast
     toast({
       title: "Sending Message...",
       description: "Please wait.",
@@ -82,7 +80,6 @@ const Contact = () => {
           title: "Message Sent!",
           description: "Thanks! I'll get back to you within 3 business days.",
         });
-        // Reset form on success
         setFormData({
           name: "",
           email: "",
@@ -90,7 +87,6 @@ const Contact = () => {
           message: "",
         });
       } else {
-        // Show error toast from Web3Forms
         toast({
           title: "Error",
           description: result.message || "An error occurred.",
@@ -98,7 +94,6 @@ const Contact = () => {
         });
       }
     } catch (error) {
-      // Show generic error toast
       toast({
         title: "Error",
         description: "An error occurred while sending the message.",
@@ -125,7 +120,7 @@ const Contact = () => {
             Let's <span className="gradient-text">Connect</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-4">
-            Available for opportunities & collaborations — let's chat!
+            Available for internships & ML collaborations — let's chat!
           </p>
           <div className="flex items-center justify-center gap-2 text-muted-foreground">
             <MapPin className="w-4 h-4" />
@@ -197,7 +192,7 @@ const Contact = () => {
                   </Button>
                 </form>
               </CardContent>
-            </Card>
+            </card>
           </motion.div>
 
           {/* Contact Info */}

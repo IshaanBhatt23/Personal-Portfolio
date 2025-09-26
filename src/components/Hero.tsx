@@ -41,16 +41,16 @@ const Hero = () => {
 
       {/* Contact CTA - Top Right */}
       <motion.div
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
+        initial={{ opacity: 0, y: -100 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.8 }}
-        className="absolute top-8 right-8 z-10"
+        className="fixed top-6 right-6 z-50" 
       >
-        <Button variant="outline" size="sm" className="glass-card">
-          <a href="#contact" className="flex items-center gap-2">
+        <a href="#contact">
+          <Button variant="outline" size="sm" className="glass-card flex items-center gap-2">
             Contact <ChevronRight className="w-4 h-4" />
-          </a>
-        </Button>
+          </Button>
+        </a>
       </motion.div>
 
       <div className="container mx-auto px-6 text-center z-10">
@@ -110,18 +110,18 @@ const Hero = () => {
             transition={{ delay: 0.6 }}
             className="flex flex-col sm:flex-row gap-4 justify-center mb-8"
           >
-            <Button size="lg" className="bg-gradient-to-r from-accent to-purple hover:scale-105 transition-transform">
-              <a href="#projects" className="flex items-center gap-2">
+            <a href="#projects">
+              <Button size="lg" className="bg-gradient-to-r from-accent to-purple hover:scale-105 transition-transform flex items-center gap-2">
                 View Work <ChevronRight className="w-5 h-5" />
-              </a>
-            </Button>
+              </Button>
+            </a>
             
-            <Button variant="outline" size="lg" className="hover:scale-105 transition-transform">
-              <a href="/Ishaan-Bhatt_Resume.pdf" download className="flex items-center gap-2">
+            <a href="/resume.pdf" download="Ishaan-Bhatt-Resume.pdf">
+              <Button variant="outline" size="lg" className="hover:scale-105 transition-transform flex items-center gap-2">
                 <Download className="w-5 h-5" />
                 Download Resume
-              </a>
-            </Button>
+              </Button>
+            </a>
           </motion.div>
 
           {/* Contact Info */}

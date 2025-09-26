@@ -100,7 +100,7 @@ const About = () => {
               <CardContent className="p-0">
                 <h3 className="text-xl font-semibold mb-4">Quick Summary</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Final-year Computer Science student at KIIT with a focus on machine learning, data analytics, and audio-tech. Currently building ML systems at Katch GO and leading community outreach for the Global AI Hackathon.
+                  Final-year Computer Science student at KIIT with a focus on machine learning, data analytics and audio-tech. Currently building ML systems at Katch GO and leading community outreach for the Global AI Hackathon.
                 </p>
               </CardContent>
             </Card>

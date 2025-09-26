@@ -192,7 +192,7 @@ const Contact = () => {
                   </Button>
                 </form>
               </CardContent>
-            </card>
+            </Card>
           </motion.div>
 
           {/* Contact Info */}

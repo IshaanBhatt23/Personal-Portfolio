@@ -63,6 +63,7 @@ export default {
         },
       },
       fontFamily: {
+        sans: ['Noto Sans', 'sans-serif'],
         'inter': ['Inter', 'sans-serif'],
         'roboto': ['Roboto', 'sans-serif'],
       },

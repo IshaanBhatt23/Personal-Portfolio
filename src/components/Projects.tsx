@@ -132,12 +132,11 @@ const Projects = () => {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Featured <span className="gradient-text">Projects</span>
+            Featured <span className="animated-title">Projects</span>
           </h2>
         </motion.div>
 
@@ -145,7 +144,6 @@ const Projects = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
           transition={{ delay: 0.2 }}
           className="flex flex-wrap justify-center gap-3 mb-12"
         >
@@ -167,13 +165,12 @@ const Projects = () => {
             <motion.div
               key={project.title}
               initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05, duration: 0.2 }}
               whileHover={{ y: -10 }}
               className="h-full"
             >
-              <Card className="glass-card h-full hover:shadow-glow transition-all duration-300 group">
+              <Card className="project-card h-full transition-all duration-300 group bg-black border border-neutral-800">
                 <CardHeader>
                   <div className="flex justify-between items-start mb-4">
                     <Badge variant="secondary" className="bg-accent/10 text-accent">
@@ -188,7 +185,7 @@ const Projects = () => {
                     </div>
                   </div>
                   
-                  <CardTitle className="text-xl mb-2 group-hover:text-accent transition-colors">
+                  <CardTitle className="project-title text-xl mb-2 transition-colors">
                     {project.title}
                   </CardTitle>
                   

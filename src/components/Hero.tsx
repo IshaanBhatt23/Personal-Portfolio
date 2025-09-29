@@ -18,7 +18,7 @@ const Hero = () => {
       
       {/* Floating particles */}
       <div className="absolute inset-0">
-        {[...Array(20)].map((_, i) => (
+        {[...Array(75)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute w-1 h-1 bg-accent rounded-full"
@@ -81,7 +81,7 @@ const Hero = () => {
             transition={{ delay: 0.3 }}
             className="text-5xl md:text-7xl font-bold mb-6"
           >
-            <span className="gradient-text">Ishaan Bhatt</span>
+            <span className="animated-title">Ishaan Bhatt</span>
           </motion.h1>
 
           <motion.h2

@@ -272,12 +272,12 @@ const Education = () => {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ amount: 0.1 }}
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Education & <span className="gradient-text">Certifications</span>
+            Education & <span className="animated-title">Certifications</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Continuous learning in AI/ML, data science, and business analytics
@@ -289,7 +289,6 @@ const Education = () => {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
             transition={{ delay: 0.2 }}
           >
             <h3 className="text-2xl font-semibold mb-6 flex items-center gap-3">
@@ -339,7 +338,6 @@ const Education = () => {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
             transition={{ delay: 0.4 }}
           >
             <h3 className="text-2xl font-semibold mb-6 flex items-center gap-3">
@@ -352,9 +350,8 @@ const Education = () => {
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.05 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05, duration: 0.2 }}
                   whileHover={{ y: -5 }}
                 >
                   <Card className="glass-card h-full flex flex-col justify-between hover:shadow-glow transition-all duration-300">
@@ -398,9 +395,8 @@ const Education = () => {
             {!isExpanded && certifications.length > 6 && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.2 }}
+                animate={{ opacity: 1, y: 0 }}
+                
                 className="text-center mt-8"
               >
                 <Button variant="outline" onClick={() => setIsExpanded(true)} className="hover:scale-105 transition-transform">

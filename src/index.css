@@ -3,109 +3,314 @@
 @tailwind utilities;
 
 /* Audio-Tech Design System - Ishaan Bhatt Portfolio
+Theme: Black Neon (Black + Cyan + Purple)
 All colors MUST be HSL.
 */
 
+/* --------------------------
+   Design tokens (unchanged)
+   -------------------------- */
 @layer base {
-:root {
-    /* MODIFIED: New Hacker Theme Colors */
---background: 222 84% 4%; /* Deep Navy Blue */
- --foreground: 210 40% 98%; /* Sharp White */
- --card: 222 84% 6%;
---card-foreground: 210 40% 98%;
---popover: 222 84% 4%;
---popover-foreground: 210 40% 98%;
---primary: 142 76% 50%; /* Electric Green */
---primary-foreground: 142 86% 25%;
---secondary: 217 33% 17%;
---secondary-foreground: 210 40% 98%;
---muted: 217 33% 17%;
---muted-foreground: 215 20% 65%;
---accent: 142 76% 50%; /* Electric Green */
---accent-foreground: 210 40% 98%;
---purple: 142 76% 50%; /* Changed to green for consistency */
---purple-foreground: 0 0% 98%;
---destructive: 0 63% 31%;
---destructive-foreground: 210 40% 98%;
---border: 217 33% 17%;
---input: 217 33% 17%;
---ring: 142 76% 50%;
- /* UNTOUCHED: Original Custom Properties */
---glass-bg: 0 0% 100% / 0.7;
---glass-border: 0 0% 100% / 0.18;
---shadow-elegant: 0 10px 30px -10px hsl(210 40% 10% / 0.1);
---shadow-glow: 0 0 40px hsl(195 100% 50% / 0.15);
---gradient-primary: linear-gradient(135deg, hsl(210 40% 10%), hsl(210 40% 20%));
---gradient-accent: linear-gradient(135deg, hsl(195 100% 50%), hsl(259 69% 58%));
---gradient-hero: linear-gradient(135deg, hsl(0 0% 100% / 0.9), hsl(0 0% 100% / 0.6));
---radius: 0.5rem;
---sidebar-background: 0 0% 98%;
---sidebar-foreground: 240 5.3% 26.1%;w
---sidebar-primary: 240 5.9% 10%;
---sidebar-primary-foreground: 0 0% 98%;
---sidebar-accent: 240 4.8% 95.9%;
---sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+  :root {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 98%;
+
+    /* Primary - Neon Cyan */
+    --primary: 190 100% 50%;
+    --primary-foreground: 0 0% 0%;
+
+    /* Secondary - Dark Gray */
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 70%;
+
+    /* Accent - Neon Purple */
+    --accent: 268 80% 60%;
+    --accent-foreground: 0 0% 0%;
+
+    /* Purple - Same as accent */
+    --purple: 268 80% 60%;
+    --purple-foreground: 0 0% 0%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 190 100% 50%;
+
+    /* Effects */
+    --glass-bg: 0 0% 100% / 0.05;
+    --glass-border: 0 0% 100% / 0.08;
+    --shadow-elegant: 0 10px 30px -10px hsl(0 0% 0% / 0.7);
+    --shadow-glow: 0 0 40px hsl(190 100% 50% / 0.3);
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(190 100% 50%), hsl(268 80% 60%));
+    --gradient-accent: linear-gradient(135deg, hsl(268 80% 60%), hsl(190 100% 50%));
+    --gradient-hero: linear-gradient(135deg, hsl(0 0% 0% / 0.9), hsl(0 0% 0% / 0.6));
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 0 0% 5%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 190 100% 50%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 12%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 268 80% 60%;
+  }
+
+  .dark {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 190 100% 50%;
+    --primary-foreground: 0 0% 0%;
+
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 70%;
+
+    --accent: 268 80% 60%;
+    --accent-foreground: 0 0% 0%;
+
+    --purple: 268 80% 60%;
+    --purple-foreground: 0 0% 0%;
+
+    --destructive: 0 62% 51%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 190 100% 50%;
+
+    --glass-bg: 0 0% 100% / 0.05;
+    --glass-border: 0 0% 100% / 0.08;
+    --shadow-elegant: 0 10px 30px -10px hsl(0 0% 0% / 0.7);
+    --shadow-glow: 0 0 40px hsl(268 80% 60% / 0.3);
+
+    --gradient-primary: linear-gradient(135deg, hsl(190 100% 50%), hsl(268 80% 60%));
+    --gradient-accent: linear-gradient(135deg, hsl(268 80% 60%), hsl(190 100% 50%));
+    --gradient-hero: linear-gradient(135deg, hsl(0 0% 0% / 0.9), hsl(0 0% 0% / 0.6));
+  }
 }
 
-.dark {
-    /* MODIFIED: New Hacker Theme Colors */
---background: 222 84% 4%;
---foreground: 210 40% 98%;
---card: 222 84% 6%;
---card-foreground: 210 40% 98%;
---popover: 222 84% 4%;
---popover-foreground: 210 40% 98%;
---primary: 142 76% 50%;
---primary-foreground: 142 86% 25%;
---secondary: 217 33% 17%;
---secondary-foreground: 210 40% 98%;
---muted: 217 33% 17%;
---muted-foreground: 215 20% 65%;
---accent: 142 76% 50%;
---accent-foreground: 210 40% 98%;
---purple: 142 76% 50%; /* Changed to green for consistency */
---purple-foreground: 0 0% 98%;
---destructive: 0 62% 51%;
---destructive-foreground: 0 0% 98%;
---border: 217 33% 17%;
---input: 217 33% 17%;
---ring: 142 76% 50%;
-/* UNTOUCHED: Original Custom Properties */
---glass-bg: 210 40% 10% / 0.8;
---glass-border: 0 0% 100% / 0.1;
---shadow-elegant: 0 10px 30px -10px hsl(0 0% 0% / 0.5);
---shadow-glow: 0 0 40px hsl(195 100% 50% / 0.2);
---gradient-primary: linear-gradient(135deg, hsl(210 40% 10%), hsl(210 40% 15%));
---gradient-accent: linear-gradient(135deg, hsl(195 100% 50%), hsl(259 69% 58%));
---gradient-hero: linear-gradient(135deg, hsl(210 40% 10% / 0.9), hsl(210 40% 10% / 0.6));
-}
-/* UNTOUCHED: Original Custom Classes */
+/* --------------------------
+   Core styles (unchanged)
+   -------------------------- */
 @layer base {
- * {
-@apply border-border;
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-inter;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-inter font-bold;
+    /* Keep headings using default text color (foreground) by default */
+    color: hsl(var(--foreground));
+  }
+
+  /* === Neon Cyberpunk Project Cards === */
+  .project-card {
+    @apply relative rounded-xl p-6 transition-all duration-500 ease-out;
+    background: hsl(var(--card) / 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid hsl(var(--border));
+    box-shadow: var(--shadow-elegant);
+  }
+
+  .project-card:hover {
+    transform: translateY(-6px) scale(1.03);
+    border-color: hsl(var(--primary));
+    box-shadow:
+      0 0 20px hsl(var(--primary) / 0.5),
+      0 0 40px hsl(var(--accent) / 0.4);
+  }
+
+  .project-card h3 {
+    @apply text-lg font-bold transition-colors duration-300;
+  }
+
+  .project-card:hover h3 {
+    color: hsl(var(--primary));
+    text-shadow: 0 0 12px hsl(var(--primary) / 0.8);
+  }
+
+  .project-pill {
+    @apply inline-block text-xs font-medium px-3 py-1 rounded-full mb-3;
+    background: hsl(var(--accent) / 0.15);
+    border: 1px solid hsl(var(--accent) / 0.4);
+    color: hsl(var(--accent));
+    transition: all 0.3s ease;
+  }
+  .project-card:hover .project-pill {
+    background: hsl(var(--primary) / 0.2);
+    border-color: hsl(var(--primary));
+    color: hsl(var(--primary));
+  }
+
+  .project-card .btn {
+    @apply mt-4 inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium;
+    background: var(--gradient-primary);
+    color: hsl(var(--primary-foreground));
+    transition: all 0.3s ease-in-out;
+  }
+  .project-card .btn:hover {
+    background: var(--gradient-accent);
+    box-shadow: 0 0 15px hsl(var(--primary) / 0.7);
+  }
+
+  .project-tag {
+    @apply inline-block text-xs px-2 py-1 mr-2 mb-2 rounded-md;
+    background: hsl(var(--muted) / 0.3);
+    color: hsl(var(--muted-foreground));
+    transition: all 0.2s ease;
+  }
+  .project-card:hover .project-tag {
+    background: hsl(var(--primary) / 0.25);
+    color: hsl(var(--primary));
+  }
+
+  /* Glass effect for generic sections */
+  .glass-card {
+    @apply bg-white/5 backdrop-blur-md border border-white/10 shadow-lg;
+  }
+
+  .dark .glass-card {
+    @apply bg-white/5 border-white/10;
+  }
+
+  .waveform {
+    animation: wave 2s infinite ease-in-out;
+  }
+
+  @keyframes wave {
+    0%, 100% { transform: scaleY(1); }
+    50% { transform: scaleY(1.5); }
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent;
+  }
 }
-body {
-@apply bg-background text-foreground font-inter;
+
+/* keep existing overrides */
+.project-card:hover {
+  border-color: #00eaff;
+  box-shadow: 0 0 20px rgba(0, 234, 255, 0.4);
 }
-h1, h2, h3, h4, h5, h6 {
-@apply font-inter font-bold;
+
+.project-card:hover .project-title {
+  color: #00eaff;
+  text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
 }
-.glass-card {
-@apply bg-white/70 backdrop-blur-md border border-white/20 shadow-lg;
+
+/* --------------------------
+   SCOPE: Animated title foreground only
+   - No global title color changes
+   - Use: <h2>Featured <span class="animated-title">Projects</span></h2>
+   -------------------------- */
+
+/* Keyframes: hue shift (subtle filter) */
+@keyframes titleHueShiftFilter {
+  0%   { filter: hue-rotate(0deg) saturate(1); -webkit-filter: hue-rotate(0deg) saturate(1); }
+  25%  { filter: hue-rotate(18deg) saturate(1.02); -webkit-filter: hue-rotate(18deg) saturate(1.02); }
+  50%  { filter: hue-rotate(36deg) saturate(1.05); -webkit-filter: hue-rotate(36deg) saturate(1.05); }
+  75%  { filter: hue-rotate(18deg) saturate(1.02); -webkit-filter: hue-rotate(18deg) saturate(1.02); }
+  100% { filter: hue-rotate(0deg) saturate(1); -webkit-filter: hue-rotate(0deg) saturate(1); }
 }
-.dark .glass-card {
-@apply bg-primary/80 border-white/10;
+
+/* Keyframes: move the gradient across the text */
+@keyframes titleGradientMove {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
-.waveform {
-animation: wave 2s infinite ease-in-out;
+
+/* The animated-title class (only this class affects colors/gradients) */
+.animated-title {
+  /* make sure text can show gradient and animate correctly */
+  display: inline-block;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent; /* ensures gradient is visible */
+  color: transparent;
+
+  /* moving gradient built from existing tokens (no new colors) */
+  background-image: linear-gradient(
+    90deg,
+    hsl(var(--primary)) 0%,
+    hsl(var(--accent)) 50%,
+    hsl(var(--primary)) 100%
+  );
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+
+  /* apply both the subtle hue filter and the moving gradient */
+  animation:
+    titleHueShiftFilter 12s ease-in-out infinite,
+    titleGradientMove 6s linear infinite;
+  -webkit-animation:
+    titleHueShiftFilter 12s ease-in-out infinite,
+    titleGradientMove 6s linear infinite;
+
+  will-change: filter, background-position;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  transition: transform 220ms ease;
 }
-@keyframes wave {
-0%, 100% { transform: scaleY(1); }
-50% { transform: scaleY(1.5); }
+
+/* optional hover tweak: slight lift and faster gradient */
+.animated-title:hover {
+  transform: translateY(-2px);
+  animation-duration: 10s, 4s; /* first = filter, second = gradient */
+  -webkit-animation-duration: 10s, 4s;
 }
-.gradient-text {
-@apply bg-gradient-to-r from-accent to-purple bg-clip-text text-transparent;
+
+/* Respect system reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .animated-title {
+    animation: none !important;
+    -webkit-animation: none !important;
+    will-change: auto;
+    background-image: none !important;
+    color: inherit !important;
+    -webkit-text-fill-color: inherit !important;
+  }
 }
+
+/* --------------------------
+   Utility: static-title (opt-out)
+   - Use if you need a heading text to explicitly stay static
+   - Example: <h2 class="page-title static-title">Featured <span class="animated-title">Projects</span></h2>
+   -------------------------- */
+.static-title {
+  /* prevents inherited animations from parent wrappers */
+  animation: none !important;
+  -webkit-animation: none !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+  will-change: auto !important;
 }
+
+/* End of file */

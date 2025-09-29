@@ -59,12 +59,11 @@ const Skills = () => {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Skills & <span className="gradient-text">Expertise</span>
+            Skills & <span className="animated-title">Expertise</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             From machine learning frameworks to cloud platforms, here's my technical toolkit
@@ -75,7 +74,6 @@ const Skills = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
           transition={{ delay: 0.2 }}
           className="flex flex-wrap justify-center gap-3 mb-16"
         >
@@ -84,7 +82,6 @@ const Skills = () => {
               key={skill}
               initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
               transition={{ delay: index * 0.05 }}
               whileHover={{ scale: 1.1 }}
             >
@@ -105,7 +102,6 @@ const Skills = () => {
               key={category.title}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
               transition={{ delay: categoryIndex * 0.1 }}
             >
               <Card className="glass-card h-full">
@@ -120,7 +116,6 @@ const Skills = () => {
                         key={skill.name}
                         initial={{ opacity: 0, x: -20 }}
                         whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
                         transition={{ delay: (categoryIndex * 0.1) + (skillIndex * 0.05) }}
                         className="space-y-2"
                       >

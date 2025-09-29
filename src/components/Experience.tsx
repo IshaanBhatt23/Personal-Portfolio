@@ -62,12 +62,11 @@ const Experience = () => {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Experience & <span className="gradient-text">Achievements</span>
+            Experience & <span className="animated-title">Achievements</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Building ML systems, leading communities and solving real-world problems
@@ -83,7 +82,6 @@ const Experience = () => {
                 key={index}
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
                 transition={{ delay: index * 0.2 }}
               >
                 <Card className="glass-card hover:shadow-glow transition-all duration-300">
@@ -147,7 +145,6 @@ const Experience = () => {
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
                 transition={{ delay: 0.3 + index * 0.1 }}
               >
                 <Card className="glass-card hover:shadow-glow transition-all duration-300">

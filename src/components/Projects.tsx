@@ -79,7 +79,7 @@ const Projects = () => {
     },
     {
       title: "Coffee Shop Sales Analytics",
-      subtitle: "Sales analysis with data cleaning, charts, and business insights",
+      subtitle: "Sales analysis with data cleaning, charts and business insights",
       description: "Comprehensive business analytics dashboard for coffee shop sales data",
       tech: ["Python", "Pandas", "Matplotlib", "Seaborn"],
       category: ["Analytics"],
@@ -110,7 +110,7 @@ const Projects = () => {
     {
       title: "Mine vs Rock Classifier",
       subtitle: "Binary classification for sonar data analysis",
-      description: "Teaching project for binary classification using sonar data",
+      description: "Project for understanding the concept of binary classification using sonar data",
       tech: ["Python", "Scikit-learn", "Pandas"],
       category: ["ML Model"],
       metrics: "Binary classification",

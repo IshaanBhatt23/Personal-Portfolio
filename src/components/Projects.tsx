@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import Tilt from "react-parallax-tilt"; // 1. Import the Tilt component
+import Tilt from "react-parallax-tilt";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,16 +19,6 @@ const Projects = () => {
       highlights: ["MFCC feature extraction", "Real-time classification", "Dataset included in README"]
     },
     {
-      title: "Virtual Theremin",
-      subtitle: "Webcam hand-tracking → WebAudio sound synthesis demo",
-      description: "Interactive theremin controlled by hand gestures using computer vision",
-      tech: ["OpenCV", "Python", "WebAudio", "NumPy", "Flask"],
-      category: ["Audio Tech", "CV"],
-      metrics: "Real-time hand tracking",
-      github: "https://github.com/IshaanBhatt23/Virtual-Thermin",
-      highlights: ["Hand gesture recognition", "Audio synthesis", "Interactive demo"]
-    },
-    {
       title: "Generative 3D Jewellery Design",
       subtitle: "2D→3D pipeline with exportable .obj outputs",
       description: "Generate 3D jewelry models from 2D designs using generative AI techniques",
@@ -38,6 +28,7 @@ const Projects = () => {
       github: "https://github.com/IshaanBhatt23/Generative-3D-Jewellery-Design",
       highlights: ["2D to 3D conversion", "Exportable formats", "Generative modeling"]
     },
+
     {
       title: "Document Summarizer & Q/A",
       subtitle: "Transformer-based document processing with Q/A capabilities",
@@ -57,6 +48,16 @@ const Projects = () => {
       metrics: "Time-series forecasting",
       github: "https://github.com/IshaanBhatt23/Stocks-Predictor",
       highlights: ["Time series analysis", "Market prediction", "Data visualization"]
+    },
+    {
+      title: "Virtual Theremin",
+      subtitle: "Webcam hand-tracking → WebAudio sound synthesis demo",
+      description: "Interactive theremin controlled by hand gestures using computer vision",
+      tech: ["OpenCV", "Python", "WebAudio", "NumPy", "Flask"],
+      category: ["Audio Tech", "CV"],
+      metrics: "Real-time hand tracking",
+      github: "https://github.com/IshaanBhatt23/Virtual-Thermin",
+      highlights: ["Hand gesture recognition", "Audio synthesis", "Interactive demo"]
     },
     {
       title: "Movie Recommendation System",
@@ -123,9 +124,10 @@ const Projects = () => {
   const categories = ["All", "Audio Tech", "CV", "Generative AI", "LLM/NLP", "ML Model", "Analytics", "Game"];
   const [selectedCategory, setSelectedCategory] = React.useState("All");
 
-  const filteredProjects = selectedCategory === "All"
-    ? projects
-    : projects.filter(project => project.category.includes(selectedCategory));
+  const filteredProjects =
+    selectedCategory === "All"
+      ? projects
+      : projects.filter((project) => project.category.includes(selectedCategory));
 
   return (
     <section id="projects" className="py-24">
@@ -160,10 +162,13 @@ const Projects = () => {
           ))}
         </motion.div>
 
-        {/* Projects Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* Projects Grid with Layout Animation */}
+        <motion.div
+          layout
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+          transition={{ layout: { duration: 0.5, type: "spring" } }}
+        >
           {filteredProjects.map((project, index) => (
-            // 2. Wrap the motion.div with the Tilt component
             <Tilt
               key={project.title}
               tiltMaxAngleX={10}
@@ -175,17 +180,19 @@ const Projects = () => {
               glareColor="hsl(var(--primary))"
             >
               <motion.div
+                layout
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05, duration: 0.2 }}
-                whileHover={{ y: -10 }} // This will now work in combination with the tilt
+                exit={{ opacity: 0, y: -30 }}
+                transition={{ delay: index * 0.05, duration: 0.3, type: "spring" }}
+                whileHover={{ y: -10 }}
                 className="h-full"
               >
                 <Card className="project-card h-full transition-all duration-300 group bg-black border border-neutral-800">
                   <CardHeader>
                     <div className="flex justify-between items-start mb-4">
                       <Badge variant="secondary" className="bg-accent/10 text-accent">
-                        {project.category.join(' / ')}
+                        {project.category.join(" / ")}
                       </Badge>
                       <div className="flex gap-2">
                         <Button size="sm" variant="ghost" className="p-2" asChild>
@@ -195,18 +202,14 @@ const Projects = () => {
                         </Button>
                       </div>
                     </div>
-                    
+
                     <CardTitle className="project-title text-xl mb-2 transition-colors">
                       {project.title}
                     </CardTitle>
-                    
-                    <p className="text-sm text-muted-foreground mb-3">
-                      {project.subtitle}
-                    </p>
-                    
-                    <p className="text-sm text-purple font-semibold">
-                      {project.metrics}
-                    </p>
+
+                    <p className="text-sm text-muted-foreground mb-3">{project.subtitle}</p>
+
+                    <p className="text-sm text-purple font-semibold">{project.metrics}</p>
                   </CardHeader>
 
                   <CardContent className="pt-0">
@@ -225,7 +228,10 @@ const Projects = () => {
 
                       <div className="space-y-2">
                         {project.highlights.map((highlight, i) => (
-                          <div key={i} className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <div
+                            key={i}
+                            className="flex items-center gap-2 text-xs text-muted-foreground"
+                          >
                             <div className="w-1 h-1 bg-accent rounded-full"></div>
                             {highlight}
                           </div>
@@ -246,7 +252,7 @@ const Projects = () => {
               </motion.div>
             </Tilt>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

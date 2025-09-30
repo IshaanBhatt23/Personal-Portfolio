@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import Tilt from "react-parallax-tilt"; // 1. Import the Tilt component
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -162,77 +163,88 @@ const Projects = () => {
         {/* Projects Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredProjects.map((project, index) => (
-            <motion.div
+            // 2. Wrap the motion.div with the Tilt component
+            <Tilt
               key={project.title}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05, duration: 0.2 }}
-              whileHover={{ y: -10 }}
-              className="h-full"
+              tiltMaxAngleX={10}
+              tiltMaxAngleY={10}
+              perspective={1000}
+              glareEnable={true}
+              glareMaxOpacity={0.4}
+              glarePosition="all"
+              glareColor="hsl(var(--primary))"
             >
-              <Card className="project-card h-full transition-all duration-300 group bg-black border border-neutral-800">
-                <CardHeader>
-                  <div className="flex justify-between items-start mb-4">
-                    <Badge variant="secondary" className="bg-accent/10 text-accent">
-                      {project.category.join(' / ')}
-                    </Badge>
-                    <div className="flex gap-2">
-                      <Button size="sm" variant="ghost" className="p-2" asChild>
-                        <a href={project.github} target="_blank" rel="noopener noreferrer">
-                          <Github className="w-4 h-4" />
-                        </a>
-                      </Button>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05, duration: 0.2 }}
+                whileHover={{ y: -10 }} // This will now work in combination with the tilt
+                className="h-full"
+              >
+                <Card className="project-card h-full transition-all duration-300 group bg-black border border-neutral-800">
+                  <CardHeader>
+                    <div className="flex justify-between items-start mb-4">
+                      <Badge variant="secondary" className="bg-accent/10 text-accent">
+                        {project.category.join(' / ')}
+                      </Badge>
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="ghost" className="p-2" asChild>
+                          <a href={project.github} target="_blank" rel="noopener noreferrer">
+                            <Github className="w-4 h-4" />
+                          </a>
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                  
-                  <CardTitle className="project-title text-xl mb-2 transition-colors">
-                    {project.title}
-                  </CardTitle>
-                  
-                  <p className="text-sm text-muted-foreground mb-3">
-                    {project.subtitle}
-                  </p>
-                  
-                  <p className="text-sm text-purple font-semibold">
-                    {project.metrics}
-                  </p>
-                </CardHeader>
+                    
+                    <CardTitle className="project-title text-xl mb-2 transition-colors">
+                      {project.title}
+                    </CardTitle>
+                    
+                    <p className="text-sm text-muted-foreground mb-3">
+                      {project.subtitle}
+                    </p>
+                    
+                    <p className="text-sm text-purple font-semibold">
+                      {project.metrics}
+                    </p>
+                  </CardHeader>
 
-                <CardContent className="pt-0">
-                  <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
-                    {project.description}
-                  </p>
+                  <CardContent className="pt-0">
+                    <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
+                      {project.description}
+                    </p>
 
-                  <div className="space-y-4">
-                    <div className="flex flex-wrap gap-2">
-                      {project.tech.map((tech) => (
-                        <Badge key={tech} variant="outline" className="text-xs">
-                          {tech}
-                        </Badge>
-                      ))}
+                    <div className="space-y-4">
+                      <div className="flex flex-wrap gap-2">
+                        {project.tech.map((tech) => (
+                          <Badge key={tech} variant="outline" className="text-xs">
+                            {tech}
+                          </Badge>
+                        ))}
+                      </div>
+
+                      <div className="space-y-2">
+                        {project.highlights.map((highlight, i) => (
+                          <div key={i} className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <div className="w-1 h-1 bg-accent rounded-full"></div>
+                            {highlight}
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="flex gap-2 pt-4">
+                        <Button size="sm" className="flex-1" asChild>
+                          <a href={project.github} target="_blank" rel="noopener noreferrer">
+                            <Github className="w-4 h-4 mr-2" />
+                            See Project
+                          </a>
+                        </Button>
+                      </div>
                     </div>
-
-                    <div className="space-y-2">
-                      {project.highlights.map((highlight, i) => (
-                        <div key={i} className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <div className="w-1 h-1 bg-accent rounded-full"></div>
-                          {highlight}
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="flex gap-2 pt-4">
-                      <Button size="sm" className="flex-1" asChild>
-                        <a href={project.github} target="_blank" rel="noopener noreferrer">
-                          <Github className="w-4 h-4 mr-2" />
-                          See Project
-                        </a>
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </Tilt>
           ))}
         </div>
       </div>

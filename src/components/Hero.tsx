@@ -8,23 +8,77 @@ interface HeroProps {
   setIsMusicMode: (isMusicMode: boolean) => void;
 }
 
+// =================================================================
+// ⭐️ NEW: useMagnetic Custom Hook
+// =================================================================
+const useMagnetic = (intensity = 0.15) => {
+  const ref = useRef<HTMLButtonElement | null>(null);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      if (!ref.current) return;
+
+      const rect = ref.current.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      
+      // Calculate distance from cursor to element center
+      const distanceX = event.clientX - centerX;
+      const distanceY = event.clientY - centerY;
+      
+      // Calculate magnetic shift (clamped to a small area)
+      const magneticX = distanceX * intensity;
+      const magneticY = distanceY * intensity;
+      
+      // We only apply the effect when within a certain radius (e.g., 100px)
+      const maxDistance = 100;
+      if (Math.abs(distanceX) < maxDistance && Math.abs(distanceY) < maxDistance) {
+        setPosition({ x: magneticX, y: magneticY });
+      } else {
+        // Smoothly reset the position when the cursor moves far away
+        setPosition({ x: position.x * 0.9, y: position.y * 0.9 });
+      }
+    };
+
+    const handleMouseLeave = () => {
+      // Smoothly reset the position when the cursor leaves the element area
+      setPosition({ x: 0, y: 0 });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    ref.current?.addEventListener('mouseleave', handleMouseLeave);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      // Clean up the event listener on the element itself if it exists
+      if (ref.current) {
+        ref.current.removeEventListener('mouseleave', handleMouseLeave);
+      }
+    };
+  }, [intensity, position.x, position.y]); // Recalculate on position change for smooth reset
+
+  return { ref, style: { transform: `translate(${position.x}px, ${position.y}px)` } };
+};
+// =================================================================
+
 // Helper component for inline SVG icons, replacing lucide-react
 const ChevronRight = (props) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="m9 18 6-6-6-6"/></svg>
 );
 const Download = (props) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-        <polyline points="7 10 12 15 17 10"/>
-        <line x1="12" y1="15" x2="12" y2="3"/>
-    </svg>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+    <polyline points="7 10 12 15 17 10"/>
+    <line x1="12" y1="15" x2="12" y2="3"/>
+  </svg>
 );
 const MapPin = (props) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
 );
 
 
-// Custom hook for the typing animation
+// Custom hook for the typing animation (kept for completeness)
 const useTypingAnimation = (text, speed = 150, delay = 2000) => {
     const [displayText, setDisplayText] = useState('');
     const [isDeleting, setIsDeleting] = useState(false);
@@ -62,10 +116,11 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode, setIsMusicMode }) => {
     const scrollPos = useRef(0);
     const animatedName = useTypingAnimation("Ishaan Bhatt");
     
-    // This local state is now removed, as it's passed in via props
-    // const [isMusicMode, setIsMusicMode] = useState(false);
+    // ⭐️ NEW: Instantiate the magnetic hook for each button
+    const magneticViewWork = useMagnetic(0.12); // Slightly stronger
+    const magneticDownload = useMagnetic(0.08); // Slightly weaker
 
-    // 3D Scene Effect
+    // 3D Scene Effect (no changes here)
     useEffect(() => {
         const currentMount = mountRef.current;
         if (!currentMount) return;
@@ -266,9 +321,9 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode, setIsMusicMode }) => {
 
                     {/* Description */}
                     <AnimatePresence mode="wait">
-                         <motion.p key={isMusicMode ? 'music-desc' : 'dev-desc'} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20}} transition={{ delay: 0.1, duration: 0.4 }} className="text-lg md:text-xl text-gray-400 mb-12 max-w-3xl mx-auto leading-relaxed" >
-                             {isMusicMode ? "Crafting beats and melodies as a loopstation artist, blending human vocals with electronic soundscapes." : "Building intelligent systems and immersive audio experiences that solve real-world problems."}
-                         </motion.p>
+                        <motion.p key={isMusicMode ? 'music-desc' : 'dev-desc'} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20}} transition={{ delay: 0.1, duration: 0.4 }} className="text-lg md:text-xl text-gray-400 mb-12 max-w-3xl mx-auto leading-relaxed" >
+                            {isMusicMode ? "Crafting beats and melodies as a loopstation artist, blending human vocals with electronic soundscapes." : "Building intelligent systems and immersive audio experiences that solve real-world problems."}
+                        </motion.p>
                     </AnimatePresence>
 
                     {/* CTA Buttons */}
@@ -278,8 +333,27 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode, setIsMusicMode }) => {
                         transition={{ delay: 0.6 }}
                         className="flex flex-col sm:flex-row gap-4 justify-center mb-8"
                     >
-                        <a href="#projects"><button className={`w-full sm:w-auto px-8 py-3 text-lg font-semibold bg-gradient-to-r rounded-lg hover:scale-105 transition-all transform-gpu flex items-center justify-center gap-2 ${isMusicMode ? 'from-orange-600 to-red-600' : 'from-purple-600 to-pink-600'}`}>View Work <ChevronRight className="w-5 h-5" /></button></a>
-                        <a href="/Ishaan-Bhatt_Resume.pdf" download="Ishaan-Bhatt-Resume.pdf"><button className="w-full sm:w-auto px-8 py-3 text-lg font-semibold bg-white/5 border border-white/20 rounded-lg hover:bg-white/10 hover:scale-105 transition-all transform-gpu flex items-center justify-center gap-2"><Download className="w-5 h-5" />Download Resume</button></a>
+                        {/* ⭐️ MODIFIED: Magnetic 'View Work' Button */}
+                        <a href="#projects">
+                          <button 
+                            ref={magneticViewWork.ref} 
+                            style={magneticViewWork.style} 
+                            className={`w-full sm:w-auto px-8 py-3 text-lg font-semibold bg-gradient-to-r rounded-lg hover:scale-105 transition-all transform-gpu flex items-center justify-center gap-2 ${isMusicMode ? 'from-orange-600 to-red-600' : 'from-purple-600 to-pink-600'}`}
+                          >
+                            View Work <ChevronRight className="w-5 h-5" />
+                          </button>
+                        </a>
+                        
+                        {/* ⭐️ MODIFIED: Magnetic 'Download Resume' Button */}
+                        <a href="/Ishaan-Bhatt_Resume.pdf" download="Ishaan-Bhatt-Resume.pdf">
+                          <button 
+                            ref={magneticDownload.ref} 
+                            style={magneticDownload.style} 
+                            className="w-full sm:w-auto px-8 py-3 text-lg font-semibold bg-white/5 border border-white/20 rounded-lg hover:bg-white/10 hover:scale-105 transition-all transform-gpu flex items-center justify-center gap-2"
+                          >
+                            <Download className="w-5 h-5" />Download Resume
+                          </button>
+                        </a>
                     </motion.div>
 
                     {/* Contact Info */}

@@ -6,6 +6,7 @@ import Experience from "../components/Experience";
 import Skills from "../components/Skills";
 import Education from "../components/Education";
 import Contact from "../components/Contact";
+import { NeuralNetworkBackground } from "@/components/NeuralNetworkBackground";
 
 // SEO data for the Developer personality
 const developerSchema = {
@@ -87,6 +88,7 @@ const Index = () => {
       <Skills />
       <Education />
       <Contact />
+      <NeuralNetworkBackground />
     </main>
   );
 };

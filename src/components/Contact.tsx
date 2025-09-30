@@ -202,7 +202,7 @@ const Contact = () => {
 
                   {/* Inline success message (in addition to toast) */}
                   <div aria-live="polite" className="min-h-[1.2rem]">
-                    {sent && <p className="text-sm text-green-600 mt-2">Message sent — thanks! ✈️</p>}
+                    {sent && <p className="text-sm text-green-600 mt-2">Message sent!</p>}
                   </div>
                 </form>
               </CardContent>

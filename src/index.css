@@ -121,6 +121,10 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground font-inter;
+    cursor: none;
+  }
+  a, button, [role="button"], .cursor-pointer {
+    cursor: none;
   }
 
   h1, h2, h3, h4, h5, h6 {

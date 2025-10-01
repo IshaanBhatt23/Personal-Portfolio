@@ -1,28 +1,28 @@
 import React, { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
-import { Heart, Cpu, Music } from "lucide-react"; 
-import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"; 
+import { Heart, Cpu, Music } from "lucide-react";
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import StatusGauge from "./StatusGauge";
+import { EphemeralHighlight } from "./EphemeralHighlight";
 
 interface AboutProps {
   isMusicMode: boolean;
 }
 
 const About: React.FC<AboutProps> = ({ isMusicMode }) => {
-  
   // ⭐️ FINAL ENERGETIC DEV FACTS ⭐️
   const devFacts = [
     {
       icon: <Cpu className="w-6 h-6 text-purple-400" />,
-      label: "Favorite Architecture", 
+      label: "Favorite Architecture",
       value: "Transformer Networks / Force-Directed Graphs",
       tooltip: "Architecture choice reflects my mindset: transformers for attention, graphs for structure.",
     },
     {
       icon: <Heart className="w-6 h-6 text-pink-400" />,
-      label: "Background Focus", 
-      value: "MLOps pipelines and Model Deployment (Kubernetes/Docker)", 
+      label: "Background Focus",
+      value: "MLOps pipelines and Model Deployment (Kubernetes/Docker)",
       tooltip: "Like Kubernetes orchestrating services, I balance multiple tracks while ensuring scalability.",
     },
   ];
@@ -32,12 +32,12 @@ const About: React.FC<AboutProps> = ({ isMusicMode }) => {
     {
       icon: <Music className="w-6 h-6 text-cyan-400" />,
       label: "Fun fact",
-      value: "Can recreate drum & bass grooves using only vocals on a loopstation", 
+      value: "Can recreate drum & bass grooves using only vocals on a loopstation",
       tooltip: "Every loop is like a microservice — independent yet synchronized in harmony.",
     },
     {
       icon: <Heart className="w-6 h-6 text-pink-400" />,
-      label: "Production Goal", 
+      label: "Production Goal",
       value: "Producing cinematic, emotional EDM with a focus on sound design synthesis",
       tooltip: "My synth design workflow mirrors AI training — iteration, tuning, and fine adjustments until harmony emerges.",
     },
@@ -77,7 +77,7 @@ const About: React.FC<AboutProps> = ({ isMusicMode }) => {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
   };
-  
+
   const summaryVariants = {
     hidden: { opacity: 0, y: 50 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.6 } },
@@ -104,19 +104,45 @@ const About: React.FC<AboutProps> = ({ isMusicMode }) => {
                 {isMusicMode ? (
                   <p className="text-lg leading-relaxed text-muted-foreground">
                     I'm an{" "}
-                    <strong className="text-foreground">experienced beatboxer</strong>, performing for{" "}
+                    <strong className="text-foreground">
+                      <EphemeralHighlight isMusicMode={isMusicMode}>experienced beatboxer</EphemeralHighlight>
+                    </strong>
+                    , performing for{" "}
                     <strong className="text-foreground">8+ years</strong> and specializing in{" "}
-                    <strong className="text-foreground">loopstation artistry</strong> and{" "}
-                    <strong className="text-foreground">FL Studio production</strong>. I love crafting{" "}
-                    <em>emotional electronic music</em> that blends human vocals with cinematic soundscapes. Along the way,
-                    I've had the privilege of working with names like <strong>Illenium</strong>,{" "}
-                    <strong>Abandoned</strong> and <strong>Lama</strong>.
+                    <strong className="text-foreground">
+                      <EphemeralHighlight isMusicMode={isMusicMode}>loopstation artistry</EphemeralHighlight>
+                    </strong>{" "}
+                    and{" "}
+                    <strong className="text-foreground">
+                      <EphemeralHighlight isMusicMode={isMusicMode}>FL Studio production</EphemeralHighlight>
+                    </strong>
+                    . I love crafting <em>emotional electronic music</em> that blends human vocals with cinematic
+                    soundscapes. Along the way, I've had the privilege of working with names like{" "}
+                    <strong className="text-foreground">
+                      <EphemeralHighlight isMusicMode={isMusicMode}>Illenium</EphemeralHighlight>
+                    </strong>
+                    ,{" "}
+                    <strong className="text-foreground">
+                      <EphemeralHighlight isMusicMode={isMusicMode}>Abandoned</EphemeralHighlight>
+                    </strong>{" "}
+                    and{" "}
+                    <strong className="text-foreground">
+                      <EphemeralHighlight isMusicMode={isMusicMode}>Lama</EphemeralHighlight>
+                    </strong>
+                    .
                   </p>
                 ) : (
                   <p className="text-lg leading-relaxed text-muted-foreground">
-                    I'm a <strong className="text-foreground">B.Tech (CSE) student (2026)</strong> passionate about
-                    applying AI/ML to real-world problems, especially at the intersection of audio and vision. I enjoy
-                    turning messy data into production-ready models and interactive demos that people can experience.
+                    I'm a{" "}
+                    <strong className="text-foreground">
+                      <EphemeralHighlight isMusicMode={isMusicMode}>B.Tech (CSE) student (2026)</EphemeralHighlight>
+                    </strong>{" "}
+                    passionate about applying AI/ML to real-world problems, especially at the intersection of{" "}
+                    <strong className="text-foreground">
+                      <EphemeralHighlight isMusicMode={isMusicMode}>audio and vision</EphemeralHighlight>
+                    </strong>
+                    . I enjoy turning messy data into production-ready models and interactive demos that people can
+                    experience.
                   </p>
                 )}
               </motion.div>
@@ -127,8 +153,8 @@ const About: React.FC<AboutProps> = ({ isMusicMode }) => {
 
                 {/* Status Gauge Placement */}
                 <motion.div variants={factItemVariants}>
-                  <StatusGauge 
-                    isMusicMode={isMusicMode} 
+                  <StatusGauge
+                    isMusicMode={isMusicMode}
                     funFact={
                       isMusicMode
                         ? "The core of my emotional electronic music is a custom-trained RNN that helps generate harmonic progressions."
@@ -136,7 +162,7 @@ const About: React.FC<AboutProps> = ({ isMusicMode }) => {
                     }
                   />
                 </motion.div>
-                
+
                 {(isMusicMode ? musicFacts : devFacts).map((fact, index) => (
                   <motion.div key={index} variants={factItemVariants}>
                     <Tooltip delayDuration={100}>
@@ -149,9 +175,7 @@ const About: React.FC<AboutProps> = ({ isMusicMode }) => {
                         >
                           <div className="flex items-center gap-3 mb-2">
                             {fact.icon}
-                            <h4 className="text-sm font-semibold text-white">
-                              {fact.label}
-                            </h4>
+                            <h4 className="text-sm font-semibold text-white">{fact.label}</h4>
                           </div>
                           <p className="text-xs text-muted-foreground">{fact.value}</p>
                         </motion.div>
@@ -173,14 +197,14 @@ const About: React.FC<AboutProps> = ({ isMusicMode }) => {
                   <h3 className="text-xl font-semibold mb-4">Quick Summary</h3>
                   {isMusicMode ? (
                     <p className="text-muted-foreground leading-relaxed">
-                      Loopstation artist and emotional Electronic Music producer blending beatboxing with electronic layers. 8+ years
-                      of experience and collaborations with artists like Illenium, Abandoned and Lama.
+                      Loopstation artist and emotional Electronic Music producer blending beatboxing with electronic
+                      layers. 8+ years of experience and collaborations with artists like Illenium, Abandoned and Lama.
                     </p>
                   ) : (
                     <p className="text-muted-foreground leading-relaxed">
                       Final-year Computer Science student at KIIT with a focus on machine learning, data analytics, and
-                      audio-tech. Currently building AI/ML models at Katch GO and leading community outreach for the Global
-                      AI Community.
+                      audio-tech. Currently building AI/ML models at Katch GO and leading community outreach for the
+                      Global AI Community.
                     </p>
                   )}
                 </CardContent>

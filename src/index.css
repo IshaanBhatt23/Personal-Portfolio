@@ -8,10 +8,14 @@ All colors MUST be HSL.
 */
 
 /* --------------------------
-   Design tokens (unchanged)
-   -------------------------- */
+  Design tokens
+  -------------------------- */
 @layer base {
   :root {
+    /* Define the accent colors for both personas for the EphemeralHighlight component */
+    --dev-accent: 190 100% 50%;   /* Neon Cyan for Developer */
+    --music-accent: 268 80% 60%; /* Neon Purple for Music Producer */
+
     --background: 0 0% 0%;
     --foreground: 0 0% 98%;
 
@@ -112,7 +116,7 @@ All colors MUST be HSL.
 }
 
 /* --------------------------
-   Core styles (unchanged)
+   Core styles
    -------------------------- */
 @layer base {
   * {
@@ -230,8 +234,6 @@ All colors MUST be HSL.
 
 /* --------------------------
    SCOPE: Animated title foreground only
-   - No global title color changes
-   - Use: <h2>Featured <span class="animated-title">Projects</span></h2>
    -------------------------- */
 
 /* Keyframes: hue shift (subtle filter) */

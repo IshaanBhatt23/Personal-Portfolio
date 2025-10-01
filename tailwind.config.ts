@@ -2,7 +2,12 @@ import type { Config } from "tailwindcss";
 
 export default {
   darkMode: ["class"],
-  content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  content: [
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+  ],
   prefix: "",
   theme: {
     container: {
@@ -14,6 +19,10 @@ export default {
     },
     extend: {
       colors: {
+        // --- Added for Dual Persona ---
+        "dev-accent": "hsl(var(--dev-accent))",
+        "music-accent": "hsl(var(--music-accent))",
+        // -----------------------------
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -63,24 +72,24 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Noto Sans', 'sans-serif'],
-        'inter': ['Inter', 'sans-serif'],
-        'roboto': ['Roboto', 'sans-serif'],
+        sans: ["Noto Sans", "sans-serif"],
+        inter: ["Inter", "sans-serif"],
+        roboto: ["Roboto", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
-        '2xl': '1rem',
-        '3xl': '1.5rem',
+        "2xl": "1rem",
+        "3xl": "1.5rem",
       },
       boxShadow: {
-        'elegant': 'var(--shadow-elegant)',
-        'glow': 'var(--shadow-glow)',
-        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+        elegant: "var(--shadow-elegant)",
+        glow: "var(--shadow-glow)",
+        glass: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
       },
       backdropBlur: {
-        'glass': '10px',
+        glass: "10px",
       },
       keyframes: {
         "accordion-down": {
@@ -93,24 +102,27 @@ export default {
         },
         "fade-in": {
           "0%": { opacity: "0", transform: "translateY(20px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" }
+          "100%": { opacity: "1", transform: "translateY(0)" },
         },
         "scale-in": {
           "0%": { transform: "scale(0.95)", opacity: "0" },
-          "100%": { transform: "scale(1)", opacity: "1" }
+          "100%": { transform: "scale(1)", opacity: "1" },
         },
         "slide-up": {
           "0%": { transform: "translateY(100%)", opacity: "0" },
-          "100%": { transform: "translateY(0)", opacity: "1" }
+          "100%": { transform: "translateY(0)", opacity: "1" },
         },
-        "wave": {
+        wave: {
           "0%, 100%": { transform: "scaleY(1)" },
-          "50%": { transform: "scaleY(1.5)" }
+          "50%": { transform: "scaleY(1.5)" },
         },
-        "glow": {
+        glow: {
           "0%, 100%": { boxShadow: "0 0 20px hsl(var(--accent))" },
-          "50%": { boxShadow: "0 0 40px hsl(var(--accent)), 0 0 60px hsl(var(--accent))" }
-        }
+          "50%": {
+            boxShadow:
+              "0 0 40px hsl(var(--accent)), 0 0 60px hsl(var(--accent))",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -118,8 +130,8 @@ export default {
         "fade-in": "fade-in 0.6s ease-out",
         "scale-in": "scale-in 0.4s ease-out",
         "slide-up": "slide-up 0.6s ease-out",
-        "wave": "wave 2s infinite ease-in-out",
-        "glow": "glow 2s infinite ease-in-out",
+        wave: "wave 2s infinite ease-in-out",
+        glow: "glow 2s infinite ease-in-out",
       },
     },
   },

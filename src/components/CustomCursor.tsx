@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
 
 // Define the props, including the isMusicMode to change themes
 interface CustomCursorProps {
@@ -7,32 +7,60 @@ interface CustomCursorProps {
 }
 
 export const CustomCursor: React.FC<CustomCursorProps> = ({ isMusicMode }) => {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [cursorVariant, setCursorVariant] = useState<"default" | "hover">(
     "default"
   );
-  // ✨ NEW: State to track if the mouse is inside the window
   const [isHoveringWindow, setIsHoveringWindow] = useState(true);
+  // ✨ NEW: State to track the click action
+  const [isClicked, setIsClicked] = useState(false);
+
+  // ✨ --- START: Performance Optimization --- ✨
+  // Use MotionValues to track mouse position without re-rendering the component
+  const mouse = {
+    x: useMotionValue(0),
+    y: useMotionValue(0),
+  };
+
+  // Use Spring to create a smooth, trailing effect for the outer ring
+  const smoothOptions = { damping: 20, stiffness: 300, mass: 0.5 };
+  const smoothMouse = {
+    x: useSpring(mouse.x, smoothOptions),
+    y: useSpring(mouse.y, smoothOptions),
+  };
+  // ✨ --- END: Performance Optimization --- ✨
 
   useEffect(() => {
     const mouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
+      // ✨ Update motion values instead of state
+      mouse.x.set(e.clientX);
+      mouse.y.set(e.clientY);
     };
 
-    // ✨ NEW: Handlers to show/hide cursor when leaving/entering the window
     const handleMouseEnter = () => setIsHoveringWindow(true);
     const handleMouseLeave = () => setIsHoveringWindow(false);
+    
+    // ✨ --- START: Click Animation --- ✨
+    const handleMouseDown = () => setIsClicked(true);
+    const handleMouseUp = () => setIsClicked(false);
+    // ✨ --- END: Click Animation --- ✨
 
     window.addEventListener("mousemove", mouseMove);
-    document.body.addEventListener("mouseenter", handleMouseEnter); // ✨ Listen on the body
-    document.body.addEventListener("mouseleave", handleMouseLeave); // ✨ Listen on the body
+    document.body.addEventListener("mouseenter", handleMouseEnter);
+    document.body.addEventListener("mouseleave", handleMouseLeave);
+    // ✨ Add event listeners for click
+    window.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("mouseup", handleMouseUp);
+
 
     return () => {
       window.removeEventListener("mousemove", mouseMove);
       document.body.removeEventListener("mouseenter", handleMouseEnter);
       document.body.removeEventListener("mouseleave", handleMouseLeave);
+      // ✨ Clean up click listeners
+      window.removeEventListener("mousedown", handleMouseDown);
+      window.removeEventListener("mouseup", handleMouseUp);
     };
-  }, []);
+  }, [mouse.x, mouse.y]);
 
   useEffect(() => {
     const handleMouseEnter = () => setCursorVariant("hover");
@@ -54,67 +82,115 @@ export const CustomCursor: React.FC<CustomCursorProps> = ({ isMusicMode }) => {
     };
   }, []);
 
-  // Define the animation variants for the cursor elements
+  // ✨ Define the animation variants for the cursor elements
+  // Note: 'x' and 'y' are removed as they are now handled by the style prop with motion values
   const variants = {
     default: {
-      x: mousePosition.x - 8,
-      y: mousePosition.y - 8,
-      height: 16,
-      width: 16,
+      height: 24,
+      width: 24,
       borderWidth: "2px",
-      borderColor: isMusicMode ? "#ff8c00" : "#9933ff",
+      borderColor: isMusicMode ? "hsl(33, 100%, 50%)" : "hsl(var(--music-accent))",
+      backgroundColor: "transparent",
+      scale: 1,
     },
     hover: {
-      x: mousePosition.x - 24,
-      y: mousePosition.y - 24,
-      height: 48,
-      width: 48,
+      height: 64,
+      width: 64,
       borderWidth: "2px",
-      borderColor: isMusicMode ? "#ff8c00" : "#9933ff",
+      borderColor: isMusicMode ? "hsl(33, 100%, 50%)" : "hsl(var(--music-accent))",
       backgroundColor: isMusicMode
-        ? "rgba(255, 140, 0, 0.1)"
-        : "rgba(153, 51, 255, 0.1)",
+        ? "hsla(33, 100%, 50%, 0.1)"
+        : "hsla(var(--music-accent) / 0.1)",
+      scale: 1,
+    },
+    // ✨ NEW: Click animation variant
+    click: {
+      height: 40,
+      width: 40,
+      scale: 1.4,
+      borderColor: isMusicMode ? "hsl(33, 100%, 50%)" : "hsl(var(--music-accent))",
+    },
+    // ✨ NEW: Rhythmic pulse for Music Mode
+    musicPulse: {
+      height: 32,
+      width: 32,
+      borderWidth: "2px",
+      borderColor: "hsl(33, 100%, 50%)",
+      // Define the repeating animation within the transition property
+      transition: {
+        scale: {
+          repeat: Infinity,
+          repeatType: "mirror",
+          duration: 1, // Corresponds to a 60 BPM beat
+          ease: "easeInOut",
+        },
+      },
+      // The scale values to animate between
+      scale: [1, 1.3, 1],
     },
   };
 
   const dotVariants = {
     default: {
-      x: mousePosition.x - 4,
-      y: mousePosition.y - 4,
-      backgroundColor: isMusicMode ? "#ff8c00" : "#9933ff",
+      backgroundColor: isMusicMode ? "hsl(33, 100%, 50%)" : "hsl(var(--music-accent))",
+      scale: 1,
     },
     hover: {
-      x: mousePosition.x - 4,
-      y: mousePosition.y - 4,
-      backgroundColor: isMusicMode ? "#ff8c00" : "#9933ff",
+      backgroundColor: isMusicMode ? "hsl(33, 100%, 50%)" : "hsl(var(--music-accent))",
       scale: 0.5,
     },
+    // ✨ NEW: Click animation for the central dot
+    click: {
+      scale: 0.2,
+      backgroundColor: isMusicMode ? "hsl(33, 100%, 50%)" : "hsl(var(--music-accent))",
+    }
   };
   
-  // ✨ NEW: Framer Motion exit animations
   const exitAnimation = { opacity: 0, scale: 0.5, transition: { duration: 0.2 } };
 
+  // ✨ Determine the current animation state based on priority
+  let currentVariant = cursorVariant;
+  if (isMusicMode && cursorVariant === "default") {
+    currentVariant = "musicPulse";
+  }
+  if (isClicked) {
+    currentVariant = "click";
+  }
+
   return (
-    // ✨ NEW: AnimatePresence wrapper for graceful exit animations
     <AnimatePresence>
       {isHoveringWindow && (
         <>
+          {/* Outer Ring */}
           <motion.div
             key="outer"
-            // ✨ NEW: Added 'custom-cursor' class for CSS targeting
             className="custom-cursor fixed top-0 left-0 rounded-full border-2 pointer-events-none z-[9999]"
+            // ✨ Use motion values in the style prop for positioning
+            style={{
+              left: smoothMouse.x,
+              top: smoothMouse.y,
+              translateX: "-50%",
+              translateY: "-50%",
+            }}
             variants={variants}
-            animate={cursorVariant}
-            exit={exitAnimation} // ✨ Use exit animation
+            animate={currentVariant}
+            exit={exitAnimation}
             transition={{ type: "spring", stiffness: 500, damping: 30 }}
           />
+          {/* Inner Dot */}
           <motion.div
             key="dot"
-            // ✨ NEW: Added 'custom-cursor' class
-            className="custom-cursor fixed top-0 left-0 w-2 h-2 rounded-full pointer-events-none z-[9999]"
+            className="custom-cursor fixed top-0 left-0 w-3 h-3 rounded-full pointer-events-none z-[9999]"
+             // ✨ Use direct motion values for a snappier dot
+            style={{
+              left: mouse.x,
+              top: mouse.y,
+              translateX: "-50%",
+              translateY: "-50%",
+            }}
             variants={dotVariants}
-            animate={cursorVariant}
-            exit={exitAnimation} // ✨ Use exit animation
+            animate={isClicked ? 'click' : cursorVariant}
+            exit={exitAnimation}
             transition={{ type: "spring", stiffness: 800, damping: 20 }}
           />
         </>

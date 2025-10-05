@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, MessageCircle, X } from "lucide-react";
 
-const TypingIndicator: React.FC = () => (
+const TypingIndicator = () => (
   <motion.div
     initial={{ opacity: 0, y: 10 }}
     animate={{ opacity: 1, y: 0 }}
@@ -26,17 +26,14 @@ const TypingIndicator: React.FC = () => (
   </motion.div>
 );
 
-type Message = { sender: "user" | "bot"; text: string };
-
-const Chatbot: React.FC = () => {
+const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
+  const [messages, setMessages] = useState<{ sender: string; text: string }[]>([
     { sender: "bot", text: "Hey! I’m Ishaan’s AI — ask me anything about his projects, music, or skills!" },
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
-  const abortRef = useRef<AbortController | null>(null);
+  const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -46,12 +43,8 @@ const Chatbot: React.FC = () => {
     scrollToBottom();
   }, [messages, isLoading]);
 
-  // Streaming-capable request handler (robust to chunked JSON / SSE "data: " prefixes)
-  const getBotReply = async (
-    prompt: string,
-    history: Message[],
-    onStream: (chunk: string) => void
-  ): Promise<void> => {
+  // ✨ UPDATED: This function now handles streaming responses.
+  const getBotReply = async (prompt: string, history: typeof messages, onStream: (chunk: string) => void): Promise<void> => {
     const systemPrompt = `You are Ishaan Bhatt's personal AI assistant, Ishaan AI. Your personality is witty, friendly, and you know everything about him. Speak in a natural, human-like way.
     --- Core Instructions ---
     - CRITICAL KEY: Brevity is key. All responses MUST be 1-2 sentences maximum. Only provide more detail if the user explicitly asks for it.
@@ -102,141 +95,75 @@ const Chatbot: React.FC = () => {
     - GitHub: https://github.com/IshaanBhatt23
     `;
 
-    const messagesForApi = history.map((msg) => ({
-      role: msg.sender === "user" ? "user" : "assistant",
+    const messagesForApi = history.map(msg => ({
+      role: msg.sender === 'user' ? 'user' : 'assistant',
       content: msg.text,
     }));
 
-    // Abort any previous inflight request
-    if (abortRef.current) {
-      try {
-        abortRef.current.abort();
-      } catch {}
-    }
-    const ac = new AbortController();
-    abortRef.current = ac;
-
     try {
-      const response = await fetch("https://deliberatively-superstrong-bari.ngrok-free.dev/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch('http://localhost:11434/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: "llama3",
+          model: 'llama3',
           messages: [
-            { role: "system", content: systemPrompt },
+            { role: 'system', content: systemPrompt },
             ...messagesForApi,
-            { role: "user", content: prompt },
+            { role: 'user', content: prompt },
           ],
-          stream: true,
+          stream: true, // ✨ Enable streaming
         }),
-        signal: ac.signal,
       });
-
-      if (!response.ok) {
-        const txt = await response.text();
-        throw new Error(`Server error ${response.status}: ${txt}`);
-      }
-
+      
       if (!response.body) {
         throw new Error("Response body is null");
       }
-
+      
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
-      let buffer = "";
-
+      
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        const chunk = decoder.decode(value, { stream: true });
-        buffer += chunk;
-
-        // split into lines; keep last partial line in buffer
-        const lines = buffer.split("\n");
-        buffer = lines.pop() || "";
-
-        for (const rawLine of lines) {
-          if (!rawLine.trim()) continue;
-          const line = rawLine.startsWith("data: ") ? rawLine.replace(/^data:\s*/, "") : rawLine;
-
-          if (line.trim() === "[DONE]") {
-            // model finished
-            return;
-          }
-
-          try {
+        
+        const chunk = decoder.decode(value);
+        const lines = chunk.split('\n');
+        
+        for (const line of lines) {
+          if (line.trim()) {
             const parsed = JSON.parse(line);
-            const chunkText =
-              parsed?.message?.content ?? parsed?.content ?? parsed?.delta?.content ?? parsed?.text ?? "";
-            if (chunkText) onStream(chunkText);
-            else onStream(line);
-          } catch {
-            // not JSON, treat as plain text
-            onStream(line);
+            onStream(parsed.message.content);
           }
         }
       }
-
-      // flush remaining buffer
-      if (buffer.trim()) {
-        try {
-          const parsed = JSON.parse(buffer);
-          const chunkText =
-            parsed?.message?.content ?? parsed?.content ?? parsed?.delta?.content ?? parsed?.text ?? "";
-          if (chunkText) onStream(chunkText);
-          else onStream(buffer);
-        } catch {
-          onStream(buffer);
-        }
-      }
-    } catch (error: any) {
-      if (error.name === "AbortError") {
-        // ignore aborts
-        console.warn("Streaming aborted");
-      } else {
-        console.error("Error connecting to LLM:", error);
-        onStream("It looks like I'm not connected to my brain right now. Please make sure the API is reachable!");
-      }
-    } finally {
-      abortRef.current = null;
+    } catch (error) {
+      console.error("Error connecting to Ollama:", error);
+      onStream("It looks like I'm not connected to my brain right now. Please make sure the Ollama application is running on your computer!");
     }
   };
-
+  
+  // ✨ UPDATED: This function now manages the streaming UI updates.
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
-
-    const prompt = input;
-    // Add user message and single bot placeholder
-    setMessages((prev) => [...prev, { sender: "user", text: prompt }, { sender: "bot", text: "" }]);
+    
+    const userMessage = { sender: "user", text: input };
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
     setInput("");
     setIsLoading(true);
 
-    try {
-      await getBotReply(
-        prompt,
-        // snapshot of history including user's latest message
-        (() => {
-          const snap = [...messages];
-          snap.push({ sender: "user", text: prompt });
-          return snap;
-        })(),
-        (chunk) => {
-          setMessages((prev) => {
-            const last = prev[prev.length - 1];
-            // If last message isn't a bot placeholder, append one
-            if (!last || last.sender !== "bot") {
-              return [...prev, { sender: "bot", text: chunk }];
-            }
-            const updated = { ...last, text: last.text + chunk };
-            return [...prev.slice(0, -1), updated];
-          });
-        }
-      );
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsLoading(false);
-    }
+    // Add a placeholder for the bot's response
+    setMessages(prev => [...prev, { sender: "bot", text: "" }]);
+
+    await getBotReply(input, newMessages, (chunk) => {
+        setMessages(prev => {
+            const lastMessage = prev[prev.length - 1];
+            const updatedLastMessage = { ...lastMessage, text: lastMessage.text + chunk };
+            return [...prev.slice(0, -1), updatedLastMessage];
+        });
+    });
+    
+    setIsLoading(false);
   };
 
   return (
@@ -250,7 +177,7 @@ const Chatbot: React.FC = () => {
             exit={{ opacity: 0, scale: 0, transition: { duration: 0.2 } }}
             whileTap={{ scale: 0.9 }}
             className="bg-primary text-primary-foreground p-5 rounded-full shadow-lg hover:bg-primary/90"
-            style={{ boxShadow: "0 0 20px hsl(var(--primary) / 0.5)" }}
+            style={{ boxShadow: '0 0 20px hsl(var(--primary) / 0.5)'}}
             onClick={() => setIsOpen(true)}
           >
             <MessageCircle className="w-8 h-8" />
@@ -263,20 +190,14 @@ const Chatbot: React.FC = () => {
             exit={{ opacity: 0, y: 50, scale: 0.9, transition: { duration: 0.3 } }}
             className="w-80 h-96 rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-border"
             style={{
-              background: "hsl(var(--card) / 0.7)",
-              backdropFilter: "blur(12px)",
-              boxShadow: "var(--shadow-elegant)",
+              background: 'hsl(var(--card) / 0.7)',
+              backdropFilter: 'blur(12px)',
+              boxShadow: 'var(--shadow-elegant)'
             }}
           >
             <div className="flex justify-between items-center px-4 py-3 bg-primary/80">
               <h3 className="font-semibold text-primary-foreground">Ishaan AI 💬</h3>
-              <button
-                onClick={() => {
-                  if (abortRef.current) abortRef.current.abort();
-                  setIsOpen(false);
-                }}
-                className="text-primary-foreground hover:opacity-80"
-              >
+              <button onClick={() => setIsOpen(false)} className="text-primary-foreground hover:opacity-80">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -291,22 +212,18 @@ const Chatbot: React.FC = () => {
                       : "bg-secondary text-secondary-foreground"
                   }`}
                 >
+                  {/* ✨ Render markdown-like links */}
                   {msg.text.split(/(\[.*?\]\(.*?\))/g).map((part, index) => {
                     const match = part.match(/\[(.*?)\]\((.*?)\)/);
                     if (match) {
-                      return (
-                        <a key={index} href={match[2]} target="_blank" rel="noopener noreferrer" className="text-cyan-400 underline">
-                          {match[1]}
-                        </a>
-                      );
+                      return <a key={index} href={match[2]} target="_blank" rel="noopener noreferrer" className="text-cyan-400 underline">{match[1]}</a>;
                     }
-                    return <span key={index}>{part}</span>;
+                    return part;
                   })}
                 </div>
               ))}
-
-              {isLoading && messages[messages.length - 1]?.text === "" && <TypingIndicator />}
-
+              {/* ✨ Typing indicator is now only shown briefly before the stream starts */}
+              {isLoading && messages[messages.length-1]?.text === "" && <TypingIndicator />}
               <div ref={messagesEndRef} />
             </div>
 

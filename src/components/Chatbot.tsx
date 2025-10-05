@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, MessageCircle, X } from "lucide-react";
 
-const TypingIndicator = () => (
+const TypingIndicator: React.FC = () => (
   <motion.div
     initial={{ opacity: 0, y: 10 }}
     animate={{ opacity: 1, y: 0 }}
@@ -35,7 +35,7 @@ const Chatbot: React.FC = () => {
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef<null | HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
   const scrollToBottom = () => {
@@ -46,7 +46,7 @@ const Chatbot: React.FC = () => {
     scrollToBottom();
   }, [messages, isLoading]);
 
-  // Robust streaming handler that can deal with chunked JSON lines and "data: " prefixes.
+  // Streaming-capable request handler (robust to chunked JSON / SSE "data: " prefixes)
   const getBotReply = async (
     prompt: string,
     history: Message[],
@@ -102,13 +102,12 @@ const Chatbot: React.FC = () => {
     - GitHub: https://github.com/IshaanBhatt23
     `;
 
-    // Build messages payload
     const messagesForApi = history.map((msg) => ({
       role: msg.sender === "user" ? "user" : "assistant",
       content: msg.text,
     }));
 
-    // Abort previous request if any
+    // Abort any previous inflight request
     if (abortRef.current) {
       try {
         abortRef.current.abort();
@@ -134,8 +133,8 @@ const Chatbot: React.FC = () => {
       });
 
       if (!response.ok) {
-        const text = await response.text();
-        throw new Error(`Server responded with ${response.status}: ${text}`);
+        const txt = await response.text();
+        throw new Error(`Server error ${response.status}: ${txt}`);
       }
 
       if (!response.body) {
@@ -152,65 +151,53 @@ const Chatbot: React.FC = () => {
         const chunk = decoder.decode(value, { stream: true });
         buffer += chunk;
 
-        // Split by newline to process lines that may contain JSON objects or "data: " SSE-like lines.
+        // split into lines; keep last partial line in buffer
         const lines = buffer.split("\n");
-        // Keep the last partial line in buffer
         buffer = lines.pop() || "";
 
         for (const rawLine of lines) {
           if (!rawLine.trim()) continue;
-
-          // Some streams prefix with "data: "
           const line = rawLine.startsWith("data: ") ? rawLine.replace(/^data:\s*/, "") : rawLine;
 
-          // If backend uses sentinel
           if (line.trim() === "[DONE]") {
+            // model finished
             return;
           }
 
-          // Try parsing JSON (tolerant)
           try {
             const parsed = JSON.parse(line);
-            // expected shape: { message: { content: "..." } } or { content: "..." }
             const chunkText =
-              parsed?.message?.content ??
-              parsed?.content ??
-              parsed?.delta?.content ??
-              parsed?.text ??
-              "";
+              parsed?.message?.content ?? parsed?.content ?? parsed?.delta?.content ?? parsed?.text ?? "";
             if (chunkText) onStream(chunkText);
-          } catch (err) {
-            // not valid JSON — as a fallback try to treat the line as plain text chunk
+            else onStream(line);
+          } catch {
+            // not JSON, treat as plain text
             onStream(line);
           }
         }
       }
 
-      // Process any remaining buffered content after stream ends
+      // flush remaining buffer
       if (buffer.trim()) {
         try {
           const parsed = JSON.parse(buffer);
           const chunkText =
-            parsed?.message?.content ??
-            parsed?.content ??
-            parsed?.delta?.content ??
-            parsed?.text ??
-            "";
+            parsed?.message?.content ?? parsed?.content ?? parsed?.delta?.content ?? parsed?.text ?? "";
           if (chunkText) onStream(chunkText);
+          else onStream(buffer);
         } catch {
           onStream(buffer);
         }
       }
-    } catch (error) {
-      if ((error as any).name === "AbortError") {
-        // aborted — ignore, user likely started a new request
+    } catch (error: any) {
+      if (error.name === "AbortError") {
+        // ignore aborts
         console.warn("Streaming aborted");
       } else {
-        console.error("Error connecting to chat API:", error);
+        console.error("Error connecting to LLM:", error);
         onStream("It looks like I'm not connected to my brain right now. Please make sure the API is reachable!");
       }
     } finally {
-      // cleanup abort controller
       abortRef.current = null;
     }
   };
@@ -218,37 +205,30 @@ const Chatbot: React.FC = () => {
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
 
-    // ensure only one bot placeholder exists
-    setMessages((prev) => {
-      // append user's message and bot placeholder
-      return [...prev, { sender: "user", text: input }, { sender: "bot", text: "" }];
-    });
-
     const prompt = input;
+    // Add user message and single bot placeholder
+    setMessages((prev) => [...prev, { sender: "user", text: prompt }, { sender: "bot", text: "" }]);
     setInput("");
     setIsLoading(true);
 
     try {
       await getBotReply(
         prompt,
-        // pass snapshot of messages (includes the initial messages but not the placeholder)
-        // We pass the latest messages state minus the final placeholder to include the user's message as well.
-        // Using a snapshot: create a shallow copy
-        ((): Message[] => {
-          const snapshot = [...messages];
-          snapshot.push({ sender: "user", text: prompt });
-          return snapshot;
+        // snapshot of history including user's latest message
+        (() => {
+          const snap = [...messages];
+          snap.push({ sender: "user", text: prompt });
+          return snap;
         })(),
         (chunk) => {
-          // update last message text by appending chunk
           setMessages((prev) => {
-            // If last message is not a bot placeholder, append one
             const last = prev[prev.length - 1];
+            // If last message isn't a bot placeholder, append one
             if (!last || last.sender !== "bot") {
               return [...prev, { sender: "bot", text: chunk }];
             }
-            const updatedLast = { ...last, text: last.text + chunk };
-            return [...prev.slice(0, -1), updatedLast];
+            const updated = { ...last, text: last.text + chunk };
+            return [...prev.slice(0, -1), updated];
           });
         }
       );
@@ -292,7 +272,6 @@ const Chatbot: React.FC = () => {
               <h3 className="font-semibold text-primary-foreground">Ishaan AI 💬</h3>
               <button
                 onClick={() => {
-                  // abort any in-flight streaming when closing
                   if (abortRef.current) abortRef.current.abort();
                   setIsOpen(false);
                 }}
@@ -326,7 +305,6 @@ const Chatbot: React.FC = () => {
                 </div>
               ))}
 
-              {/* Typing indicator shown briefly before stream starts */}
               {isLoading && messages[messages.length - 1]?.text === "" && <TypingIndicator />}
 
               <div ref={messagesEndRef} />

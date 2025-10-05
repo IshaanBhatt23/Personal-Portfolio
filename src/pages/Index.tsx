@@ -8,6 +8,7 @@ import Education from "../components/Education";
 import Contact from "../components/Contact";
 import { NeuralNetworkBackground } from "@/components/NeuralNetworkBackground";
 import { CustomCursor } from "@/components/CustomCursor";
+import Chatbot from "@/components/Chatbot";
 
 // SEO data for the Developer personality
 const developerSchema = {
@@ -89,6 +90,7 @@ const Index = () => {
       <Skills />
       <Education />
       <Contact />
+      <Chatbot />
       <NeuralNetworkBackground />
       <CustomCursor isMusicMode={isMusicMode} />
     </main>

@@ -14,7 +14,7 @@ All colors MUST be HSL.
   :root {
     /* Define the accent colors for both personas for the EphemeralHighlight component */
     --dev-accent: 190 100% 50%;   /* Neon Cyan for Developer */
-    --music-accent: 268 80% 60%; /* Neon Purple for Music Producer */
+    --music-accent: 268 80% 60%;  /* Neon Purple for Music Producer */
 
     --background: 0 0% 0%;
     --foreground: 0 0% 98%;
@@ -127,13 +127,22 @@ All colors MUST be HSL.
     @apply bg-background text-foreground font-inter;
     cursor: none;
   }
+
   a, button, [role="button"], .cursor-pointer {
     cursor: none;
   }
 
+  /* ✨ --- START: Custom Cursor Usability --- ✨ */
+  /* Hides custom cursor on devices that don't support precise hovering (e.g., mobile) */
+  @media (pointer: coarse) {
+    .custom-cursor {
+      display: none !important;
+    }
+  }
+  /* ✨ --- END: Custom Cursor Usability --- ✨ */
+
   h1, h2, h3, h4, h5, h6 {
     @apply font-inter font-bold;
-    /* Keep headings using default text color (foreground) by default */
     color: hsl(var(--foreground));
   }
 
@@ -170,6 +179,7 @@ All colors MUST be HSL.
     color: hsl(var(--accent));
     transition: all 0.3s ease;
   }
+
   .project-card:hover .project-pill {
     background: hsl(var(--primary) / 0.2);
     border-color: hsl(var(--primary));
@@ -182,6 +192,7 @@ All colors MUST be HSL.
     color: hsl(var(--primary-foreground));
     transition: all 0.3s ease-in-out;
   }
+
   .project-card .btn:hover {
     background: var(--gradient-accent);
     box-shadow: 0 0 15px hsl(var(--primary) / 0.7);
@@ -193,6 +204,7 @@ All colors MUST be HSL.
     color: hsl(var(--muted-foreground));
     transition: all 0.2s ease;
   }
+
   .project-card:hover .project-tag {
     background: hsl(var(--primary) / 0.25);
     color: hsl(var(--primary));
@@ -254,14 +266,12 @@ All colors MUST be HSL.
 
 /* The animated-title class (only this class affects colors/gradients) */
 .animated-title {
-  /* make sure text can show gradient and animate correctly */
   display: inline-block;
   -webkit-background-clip: text;
   background-clip: text;
-  -webkit-text-fill-color: transparent; /* ensures gradient is visible */
+  -webkit-text-fill-color: transparent;
   color: transparent;
 
-  /* moving gradient built from existing tokens (no new colors) */
   background-image: linear-gradient(
     90deg,
     hsl(var(--primary)) 0%,
@@ -271,7 +281,6 @@ All colors MUST be HSL.
   background-size: 200% 100%;
   background-repeat: no-repeat;
 
-  /* apply both the subtle hue filter and the moving gradient */
   animation:
     titleHueShiftFilter 12s ease-in-out infinite,
     titleGradientMove 6s linear infinite;
@@ -289,7 +298,7 @@ All colors MUST be HSL.
 /* optional hover tweak: slight lift and faster gradient */
 .animated-title:hover {
   transform: translateY(-2px);
-  animation-duration: 10s, 4s; /* first = filter, second = gradient */
+  animation-duration: 10s, 4s;
   -webkit-animation-duration: 10s, 4s;
 }
 
@@ -307,11 +316,8 @@ All colors MUST be HSL.
 
 /* --------------------------
    Utility: static-title (opt-out)
-   - Use if you need a heading text to explicitly stay static
-   - Example: <h2 class="page-title static-title">Featured <span class="animated-title">Projects</span></h2>
    -------------------------- */
 .static-title {
-  /* prevents inherited animations from parent wrappers */
   animation: none !important;
   -webkit-animation: none !important;
   filter: none !important;

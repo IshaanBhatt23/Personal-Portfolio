@@ -11,16 +11,26 @@ export const CustomCursor: React.FC<CustomCursorProps> = ({ isMusicMode }) => {
   const [cursorVariant, setCursorVariant] = useState<"default" | "hover">(
     "default"
   );
+  // ✨ NEW: State to track if the mouse is inside the window
+  const [isHoveringWindow, setIsHoveringWindow] = useState(true);
 
   useEffect(() => {
     const mouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
 
+    // ✨ NEW: Handlers to show/hide cursor when leaving/entering the window
+    const handleMouseEnter = () => setIsHoveringWindow(true);
+    const handleMouseLeave = () => setIsHoveringWindow(false);
+
     window.addEventListener("mousemove", mouseMove);
+    document.body.addEventListener("mouseenter", handleMouseEnter); // ✨ Listen on the body
+    document.body.addEventListener("mouseleave", handleMouseLeave); // ✨ Listen on the body
 
     return () => {
       window.removeEventListener("mousemove", mouseMove);
+      document.body.removeEventListener("mouseenter", handleMouseEnter);
+      document.body.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, []);
 
@@ -80,23 +90,35 @@ export const CustomCursor: React.FC<CustomCursorProps> = ({ isMusicMode }) => {
       scale: 0.5,
     },
   };
+  
+  // ✨ NEW: Framer Motion exit animations
+  const exitAnimation = { opacity: 0, scale: 0.5, transition: { duration: 0.2 } };
 
   return (
+    // ✨ NEW: AnimatePresence wrapper for graceful exit animations
     <AnimatePresence>
-      <motion.div
-        key="outer" // ✅ unique key
-        className="fixed top-0 left-0 rounded-full border-2 pointer-events-none z-[9999]"
-        variants={variants}
-        animate={cursorVariant}
-        transition={{ type: "spring", stiffness: 500, damping: 30 }}
-      />
-      <motion.div
-        key="dot" // ✅ unique key
-        className="fixed top-0 left-0 w-2 h-2 rounded-full pointer-events-none z-[9999]"
-        variants={dotVariants}
-        animate={cursorVariant}
-        transition={{ type: "spring", stiffness: 800, damping: 20 }}
-      />
+      {isHoveringWindow && (
+        <>
+          <motion.div
+            key="outer"
+            // ✨ NEW: Added 'custom-cursor' class for CSS targeting
+            className="custom-cursor fixed top-0 left-0 rounded-full border-2 pointer-events-none z-[9999]"
+            variants={variants}
+            animate={cursorVariant}
+            exit={exitAnimation} // ✨ Use exit animation
+            transition={{ type: "spring", stiffness: 500, damping: 30 }}
+          />
+          <motion.div
+            key="dot"
+            // ✨ NEW: Added 'custom-cursor' class
+            className="custom-cursor fixed top-0 left-0 w-2 h-2 rounded-full pointer-events-none z-[9999]"
+            variants={dotVariants}
+            animate={cursorVariant}
+            exit={exitAnimation} // ✨ Use exit animation
+            transition={{ type: "spring", stiffness: 800, damping: 20 }}
+          />
+        </>
+      )}
     </AnimatePresence>
   );
 };

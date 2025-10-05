@@ -26,14 +26,17 @@ const TypingIndicator = () => (
   </motion.div>
 );
 
-const Chatbot = () => {
+type Message = { sender: "user" | "bot"; text: string };
+
+const Chatbot: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<{ sender: string; text: string }[]>([
+  const [messages, setMessages] = useState<Message[]>([
     { sender: "bot", text: "Hey! I’m Ishaan’s AI — ask me anything about his projects, music, or skills!" },
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -43,8 +46,12 @@ const Chatbot = () => {
     scrollToBottom();
   }, [messages, isLoading]);
 
-  // ✨ UPDATED: This function now handles streaming responses.
-  const getBotReply = async (prompt: string, history: typeof messages, onStream: (chunk: string) => void): Promise<void> => {
+  // Robust streaming handler that can deal with chunked JSON lines and "data: " prefixes.
+  const getBotReply = async (
+    prompt: string,
+    history: Message[],
+    onStream: (chunk: string) => void
+  ): Promise<void> => {
     const systemPrompt = `You are Ishaan Bhatt's personal AI assistant, Ishaan AI. Your personality is witty, friendly, and you know everything about him. Speak in a natural, human-like way.
     --- Core Instructions ---
     - CRITICAL KEY: Brevity is key. All responses MUST be 1-2 sentences maximum. Only provide more detail if the user explicitly asks for it.
@@ -95,75 +102,161 @@ const Chatbot = () => {
     - GitHub: https://github.com/IshaanBhatt23
     `;
 
-    const messagesForApi = history.map(msg => ({
-      role: msg.sender === 'user' ? 'user' : 'assistant',
+    // Build messages payload
+    const messagesForApi = history.map((msg) => ({
+      role: msg.sender === "user" ? "user" : "assistant",
       content: msg.text,
     }));
 
+    // Abort previous request if any
+    if (abortRef.current) {
+      try {
+        abortRef.current.abort();
+      } catch {}
+    }
+    const ac = new AbortController();
+    abortRef.current = ac;
+
     try {
-      const response = await fetch('http://localhost:11434/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("https://deliberatively-superstrong-bari.ngrok-free.dev/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: 'llama3',
+          model: "llama3",
           messages: [
-            { role: 'system', content: systemPrompt },
+            { role: "system", content: systemPrompt },
             ...messagesForApi,
-            { role: 'user', content: prompt },
+            { role: "user", content: prompt },
           ],
-          stream: true, // ✨ Enable streaming
+          stream: true,
         }),
+        signal: ac.signal,
       });
-      
+
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(`Server responded with ${response.status}: ${text}`);
+      }
+
       if (!response.body) {
         throw new Error("Response body is null");
       }
-      
+
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
-      
+      let buffer = "";
+
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        
-        const chunk = decoder.decode(value);
-        const lines = chunk.split('\n');
-        
-        for (const line of lines) {
-          if (line.trim()) {
+        const chunk = decoder.decode(value, { stream: true });
+        buffer += chunk;
+
+        // Split by newline to process lines that may contain JSON objects or "data: " SSE-like lines.
+        const lines = buffer.split("\n");
+        // Keep the last partial line in buffer
+        buffer = lines.pop() || "";
+
+        for (const rawLine of lines) {
+          if (!rawLine.trim()) continue;
+
+          // Some streams prefix with "data: "
+          const line = rawLine.startsWith("data: ") ? rawLine.replace(/^data:\s*/, "") : rawLine;
+
+          // If backend uses sentinel
+          if (line.trim() === "[DONE]") {
+            return;
+          }
+
+          // Try parsing JSON (tolerant)
+          try {
             const parsed = JSON.parse(line);
-            onStream(parsed.message.content);
+            // expected shape: { message: { content: "..." } } or { content: "..." }
+            const chunkText =
+              parsed?.message?.content ??
+              parsed?.content ??
+              parsed?.delta?.content ??
+              parsed?.text ??
+              "";
+            if (chunkText) onStream(chunkText);
+          } catch (err) {
+            // not valid JSON — as a fallback try to treat the line as plain text chunk
+            onStream(line);
           }
         }
       }
+
+      // Process any remaining buffered content after stream ends
+      if (buffer.trim()) {
+        try {
+          const parsed = JSON.parse(buffer);
+          const chunkText =
+            parsed?.message?.content ??
+            parsed?.content ??
+            parsed?.delta?.content ??
+            parsed?.text ??
+            "";
+          if (chunkText) onStream(chunkText);
+        } catch {
+          onStream(buffer);
+        }
+      }
     } catch (error) {
-      console.error("Error connecting to Ollama:", error);
-      onStream("It looks like I'm not connected to my brain right now. Please make sure the Ollama application is running on your computer!");
+      if ((error as any).name === "AbortError") {
+        // aborted — ignore, user likely started a new request
+        console.warn("Streaming aborted");
+      } else {
+        console.error("Error connecting to chat API:", error);
+        onStream("It looks like I'm not connected to my brain right now. Please make sure the API is reachable!");
+      }
+    } finally {
+      // cleanup abort controller
+      abortRef.current = null;
     }
   };
-  
-  // ✨ UPDATED: This function now manages the streaming UI updates.
+
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
-    
-    const userMessage = { sender: "user", text: input };
-    const newMessages = [...messages, userMessage];
-    setMessages(newMessages);
+
+    // ensure only one bot placeholder exists
+    setMessages((prev) => {
+      // append user's message and bot placeholder
+      return [...prev, { sender: "user", text: input }, { sender: "bot", text: "" }];
+    });
+
+    const prompt = input;
     setInput("");
     setIsLoading(true);
 
-    // Add a placeholder for the bot's response
-    setMessages(prev => [...prev, { sender: "bot", text: "" }]);
-
-    await getBotReply(input, newMessages, (chunk) => {
-        setMessages(prev => {
-            const lastMessage = prev[prev.length - 1];
-            const updatedLastMessage = { ...lastMessage, text: lastMessage.text + chunk };
-            return [...prev.slice(0, -1), updatedLastMessage];
-        });
-    });
-    
-    setIsLoading(false);
+    try {
+      await getBotReply(
+        prompt,
+        // pass snapshot of messages (includes the initial messages but not the placeholder)
+        // We pass the latest messages state minus the final placeholder to include the user's message as well.
+        // Using a snapshot: create a shallow copy
+        ((): Message[] => {
+          const snapshot = [...messages];
+          snapshot.push({ sender: "user", text: prompt });
+          return snapshot;
+        })(),
+        (chunk) => {
+          // update last message text by appending chunk
+          setMessages((prev) => {
+            // If last message is not a bot placeholder, append one
+            const last = prev[prev.length - 1];
+            if (!last || last.sender !== "bot") {
+              return [...prev, { sender: "bot", text: chunk }];
+            }
+            const updatedLast = { ...last, text: last.text + chunk };
+            return [...prev.slice(0, -1), updatedLast];
+          });
+        }
+      );
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -177,7 +270,7 @@ const Chatbot = () => {
             exit={{ opacity: 0, scale: 0, transition: { duration: 0.2 } }}
             whileTap={{ scale: 0.9 }}
             className="bg-primary text-primary-foreground p-5 rounded-full shadow-lg hover:bg-primary/90"
-            style={{ boxShadow: '0 0 20px hsl(var(--primary) / 0.5)'}}
+            style={{ boxShadow: "0 0 20px hsl(var(--primary) / 0.5)" }}
             onClick={() => setIsOpen(true)}
           >
             <MessageCircle className="w-8 h-8" />
@@ -190,14 +283,21 @@ const Chatbot = () => {
             exit={{ opacity: 0, y: 50, scale: 0.9, transition: { duration: 0.3 } }}
             className="w-80 h-96 rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-border"
             style={{
-              background: 'hsl(var(--card) / 0.7)',
-              backdropFilter: 'blur(12px)',
-              boxShadow: 'var(--shadow-elegant)'
+              background: "hsl(var(--card) / 0.7)",
+              backdropFilter: "blur(12px)",
+              boxShadow: "var(--shadow-elegant)",
             }}
           >
             <div className="flex justify-between items-center px-4 py-3 bg-primary/80">
               <h3 className="font-semibold text-primary-foreground">Ishaan AI 💬</h3>
-              <button onClick={() => setIsOpen(false)} className="text-primary-foreground hover:opacity-80">
+              <button
+                onClick={() => {
+                  // abort any in-flight streaming when closing
+                  if (abortRef.current) abortRef.current.abort();
+                  setIsOpen(false);
+                }}
+                className="text-primary-foreground hover:opacity-80"
+              >
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -212,18 +312,23 @@ const Chatbot = () => {
                       : "bg-secondary text-secondary-foreground"
                   }`}
                 >
-                  {/* ✨ Render markdown-like links */}
                   {msg.text.split(/(\[.*?\]\(.*?\))/g).map((part, index) => {
                     const match = part.match(/\[(.*?)\]\((.*?)\)/);
                     if (match) {
-                      return <a key={index} href={match[2]} target="_blank" rel="noopener noreferrer" className="text-cyan-400 underline">{match[1]}</a>;
+                      return (
+                        <a key={index} href={match[2]} target="_blank" rel="noopener noreferrer" className="text-cyan-400 underline">
+                          {match[1]}
+                        </a>
+                      );
                     }
-                    return part;
+                    return <span key={index}>{part}</span>;
                   })}
                 </div>
               ))}
-              {/* ✨ Typing indicator is now only shown briefly before the stream starts */}
-              {isLoading && messages[messages.length-1]?.text === "" && <TypingIndicator />}
+
+              {/* Typing indicator shown briefly before stream starts */}
+              {isLoading && messages[messages.length - 1]?.text === "" && <TypingIndicator />}
+
               <div ref={messagesEndRef} />
             </div>
 

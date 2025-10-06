@@ -43,8 +43,12 @@ const Chatbot = () => {
     scrollToBottom();
   }, [messages, isLoading]);
 
-  // ✨ THIS IS THE MODIFIED FUNCTION ✨
-  const getBotReply = async (prompt: string, history: typeof messages, onStream: (chunk: string) => void): Promise<void> => {
+  // ✨ GROQ streaming-compatible backend fetch ✨
+  const getBotReply = async (
+    prompt: string,
+    history: typeof messages,
+    onStream: (chunk: string) => void
+  ): Promise<void> => {
     const systemPrompt = `You are Ishaan Bhatt's personal AI assistant, Ishaan AI. Your personality is witty, friendly, and you know everything about him. Speak in a natural, human-like way.
     --- Core Instructions ---
     - CRITICAL KEY: Brevity is key. All responses MUST be 1-2 sentences maximum. Only provide more detail if the user explicitly asks for it.
@@ -96,69 +100,75 @@ const Chatbot = () => {
     `;
 
     const messagesForApi = [
-      { role: 'system', content: systemPrompt },
-      ...history.map(msg => ({
-        role: msg.sender === 'user' ? 'user' : 'assistant',
+      { role: "system", content: systemPrompt },
+      ...history.map((msg) => ({
+        role: msg.sender === "user" ? "user" : "assistant",
         content: msg.text,
       })),
-      { role: 'user', content: prompt },
+      { role: "user", content: prompt },
     ];
 
     try {
-      // We now call our own API route instead of Ollama directly.
-      const response = await fetch('/api/chat', { 
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: messagesForApi }),
       });
-      
-      if (!response.body) {
-        throw new Error("Response body is null");
+
+      if (!response.ok || !response.body) {
+        throw new Error(`Request failed with status ${response.status}`);
       }
-      
+
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
-      
+
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        
-        const chunk = decoder.decode(value);
-        const lines = chunk.split('\n');
-        
+
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split("\n");
+
         for (const line of lines) {
-          if (line.trim()) {
-            const parsed = JSON.parse(line);
-            onStream(parsed.message.content);
+          if (line.startsWith("data: ")) {
+            const data = line.substring(6).trim();
+            if (data === "[DONE]") return;
+
+            try {
+              const parsed = JSON.parse(data);
+              const content = parsed.choices[0]?.delta?.content;
+              if (content) onStream(content);
+            } catch {
+              // Ignore partial JSON errors
+            }
           }
         }
       }
     } catch (error) {
-      console.error("Error connecting to the backend:", error);
-      // A more user-friendly error message
+      console.error("Error connecting to backend:", error);
       onStream("It looks like I'm having trouble connecting. Please try again later!");
     }
   };
-  
+
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
-    
+
     const userMessage = { sender: "user", text: input };
     const newMessages = [...messages, userMessage];
     setMessages(newMessages);
     setInput("");
     setIsLoading(true);
 
-    setMessages(prev => [...prev, { sender: "bot", text: "" }]);
+    setMessages((prev) => [...prev, { sender: "bot", text: "" }]);
 
     await getBotReply(input, newMessages, (chunk) => {
-      setMessages(prev => {
-        const lastMessage = prev[prev.length - 1];
-        const updatedLastMessage = { ...lastMessage, text: lastMessage.text + chunk };
-        return [...prev.slice(0, -1), updatedLastMessage];
+      setMessages((prev) => {
+        const last = prev[prev.length - 1];
+        const updated = { ...last, text: last.text + chunk };
+        return [...prev.slice(0, -1), updated];
       });
     });
-    
+
     setIsLoading(false);
   };
 
@@ -173,7 +183,7 @@ const Chatbot = () => {
             exit={{ opacity: 0, scale: 0, transition: { duration: 0.2 } }}
             whileTap={{ scale: 0.9 }}
             className="bg-primary text-primary-foreground p-5 rounded-full shadow-lg hover:bg-primary/90"
-            style={{ boxShadow: '0 0 20px hsl(var(--primary) / 0.5)'}}
+            style={{ boxShadow: "0 0 20px hsl(var(--primary) / 0.5)" }}
             onClick={() => setIsOpen(true)}
           >
             <MessageCircle className="w-8 h-8" />
@@ -186,9 +196,9 @@ const Chatbot = () => {
             exit={{ opacity: 0, y: 50, scale: 0.9, transition: { duration: 0.3 } }}
             className="w-80 h-96 rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-border"
             style={{
-              background: 'hsl(var(--card) / 0.7)',
-              backdropFilter: 'blur(12px)',
-              boxShadow: 'var(--shadow-elegant)'
+              background: "hsl(var(--card) / 0.7)",
+              backdropFilter: "blur(12px)",
+              boxShadow: "var(--shadow-elegant)",
             }}
           >
             <div className="flex justify-between items-center px-4 py-3 bg-primary/80">
@@ -211,13 +221,23 @@ const Chatbot = () => {
                   {msg.text.split(/(\[.*?\]\(.*?\))/g).map((part, index) => {
                     const match = part.match(/\[(.*?)\]\((.*?)\)/);
                     if (match) {
-                      return <a key={index} href={match[2]} target="_blank" rel="noopener noreferrer" className="text-cyan-400 underline">{match[1]}</a>;
+                      return (
+                        <a
+                          key={index}
+                          href={match[2]}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-cyan-400 underline"
+                        >
+                          {match[1]}
+                        </a>
+                      );
                     }
                     return part;
                   })}
                 </div>
               ))}
-              {isLoading && messages[messages.length-1]?.text === "" && <TypingIndicator />}
+              {isLoading && messages[messages.length - 1]?.text === "" && <TypingIndicator />}
               <div ref={messagesEndRef} />
             </div>
 

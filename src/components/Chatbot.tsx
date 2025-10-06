@@ -43,7 +43,7 @@ const Chatbot = () => {
     scrollToBottom();
   }, [messages, isLoading]);
 
-  // ✨ UPDATED: This function now handles streaming responses.
+  // ✨ THIS IS THE MODIFIED FUNCTION ✨
   const getBotReply = async (prompt: string, history: typeof messages, onStream: (chunk: string) => void): Promise<void> => {
     const systemPrompt = `You are Ishaan Bhatt's personal AI assistant, Ishaan AI. Your personality is witty, friendly, and you know everything about him. Speak in a natural, human-like way.
     --- Core Instructions ---
@@ -95,24 +95,21 @@ const Chatbot = () => {
     - GitHub: https://github.com/IshaanBhatt23
     `;
 
-    const messagesForApi = history.map(msg => ({
-      role: msg.sender === 'user' ? 'user' : 'assistant',
-      content: msg.text,
-    }));
+    const messagesForApi = [
+      { role: 'system', content: systemPrompt },
+      ...history.map(msg => ({
+        role: msg.sender === 'user' ? 'user' : 'assistant',
+        content: msg.text,
+      })),
+      { role: 'user', content: prompt },
+    ];
 
     try {
-      const response = await fetch('http://localhost:11434/api/chat', {
+      // We now call our own API route instead of Ollama directly.
+      const response = await fetch('/api/chat', { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'llama3',
-          messages: [
-            { role: 'system', content: systemPrompt },
-            ...messagesForApi,
-            { role: 'user', content: prompt },
-          ],
-          stream: true, // ✨ Enable streaming
-        }),
+        body: JSON.stringify({ messages: messagesForApi }),
       });
       
       if (!response.body) {
@@ -137,12 +134,12 @@ const Chatbot = () => {
         }
       }
     } catch (error) {
-      console.error("Error connecting to Ollama:", error);
-      onStream("It looks like I'm not connected to my brain right now. Please make sure the Ollama application is running on your computer!");
+      console.error("Error connecting to the backend:", error);
+      // A more user-friendly error message
+      onStream("It looks like I'm having trouble connecting. Please try again later!");
     }
   };
   
-  // ✨ UPDATED: This function now manages the streaming UI updates.
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
     
@@ -152,15 +149,14 @@ const Chatbot = () => {
     setInput("");
     setIsLoading(true);
 
-    // Add a placeholder for the bot's response
     setMessages(prev => [...prev, { sender: "bot", text: "" }]);
 
     await getBotReply(input, newMessages, (chunk) => {
-        setMessages(prev => {
-            const lastMessage = prev[prev.length - 1];
-            const updatedLastMessage = { ...lastMessage, text: lastMessage.text + chunk };
-            return [...prev.slice(0, -1), updatedLastMessage];
-        });
+      setMessages(prev => {
+        const lastMessage = prev[prev.length - 1];
+        const updatedLastMessage = { ...lastMessage, text: lastMessage.text + chunk };
+        return [...prev.slice(0, -1), updatedLastMessage];
+      });
     });
     
     setIsLoading(false);
@@ -212,7 +208,6 @@ const Chatbot = () => {
                       : "bg-secondary text-secondary-foreground"
                   }`}
                 >
-                  {/* ✨ Render markdown-like links */}
                   {msg.text.split(/(\[.*?\]\(.*?\))/g).map((part, index) => {
                     const match = part.match(/\[(.*?)\]\((.*?)\)/);
                     if (match) {
@@ -222,7 +217,6 @@ const Chatbot = () => {
                   })}
                 </div>
               ))}
-              {/* ✨ Typing indicator is now only shown briefly before the stream starts */}
               {isLoading && messages[messages.length-1]?.text === "" && <TypingIndicator />}
               <div ref={messagesEndRef} />
             </div>

@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Mail, Phone, Linkedin, Github, Instagram, MapPin, Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-
+// bruh
 type FormState = {
   name: string;
   email: string;

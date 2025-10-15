@@ -53,6 +53,12 @@ const Experience = () => {
       achievement: "Special Mention",
       description: "Built a pipeline with Hugging Face Diffusers, PyTorch3D and Trimesh to convert 2D images to 3D exportable models. Got a special mention for “Relevant Approach” for innovative solution and export ready .obj output.",
       year: "2025"
+    },
+    {
+      title: "Amazon ML Challenge 2025",
+      achievement: "Top 2.73% Global Rank",
+      description: "Developed a LightGBM regression model combining text (TF-IDF) and image embeddings to predict product prices. Got a rank of 629 out of 23,000 (Top 2.73%) in Amazon ML Challenge 2025 for building Smart Product Pricing Model.",
+      year: "2025"
     }
   ];
 

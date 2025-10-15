@@ -84,7 +84,7 @@ export const NeuralNetworkBackground = () => {
       if (!ctx) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      particlesArray.forEach((particle) => {
+      particlesArray.forEach((particle) => { 
         particle.draw();
 
         const dx = mouse.x - particle.x;

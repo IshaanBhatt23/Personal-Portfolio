@@ -51,13 +51,13 @@ const Experience = () => {
     {
       title: "MIT Global AI Hackathon",
       achievement: "Special Mention",
-      description: "Built a pipeline with Hugging Face Diffusers, PyTorch3D and Trimesh to convert 2D images to 3D exportable models. Got a special mention for “Relevant Approach” for innovative solution and export ready .obj output.",
+      description: "Received a special mention for 'Relevant Approach' for building an innovative pipeline that generates exportable 3D models from 2D images using Hugging Face Diffusers, PyTorch3D and Trimesh",
       year: "2025"
     },
     {
       title: "Amazon ML Challenge 2025",
       achievement: "Top 2.73% Global Rank",
-      description: "Developed a LightGBM regression model combining text (TF-IDF) and image embeddings to predict product prices. Got a rank of 629 out of 23,000 (Top 2.73%) in Amazon ML Challenge 2025 for building Smart Product Pricing Model.",
+      description: "Engineered a high-performing regression model using LightGBM to forecast product prices from text (TF-IDF) and image features, placing 629th out of 23,000 competitors globally.",
       year: "2025"
     }
   ];
@@ -184,3 +184,4 @@ const Experience = () => {
 };
 
 export default Experience;
+/*end*/

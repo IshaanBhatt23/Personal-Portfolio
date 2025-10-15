@@ -28,6 +28,16 @@ const Projects = () => {
       github: "https://github.com/IshaanBhatt23/Generative-3D-Jewellery-Design",
       highlights: ["2D to 3D conversion", "Exportable formats", "Generative modeling"]
     },
+        {
+      title: "Smart Product Pricing ",
+      subtitle: "LightGBM-based multimodal model for e-commerce price prediction",
+      description: "Developed a LightGBM regression model combining text (TF-IDF) and image embeddings to predict product prices.",
+      tech: ["LightGBM", "Optuna", "TF-IDF", "Python"],
+      category: ["ML Model"],
+      metrics: "Multimodal regression and feature fusion",
+      github: "https://github.com/IshaanBhatt23/Smart-Product-Pricing",
+      highlights: ["Text and image feature fusion", "LightGBM regression", "Top 2.73% global rank"]
+    },
 
     {
       title: "Document Summarizer & Q/A",

@@ -68,6 +68,7 @@ const Chatbot = () => {
       - Team Lead for "Heart Disease Predictor" project (87% accuracy).
       - Received "Special Mention" at MIT Global AI Hackathon for a 2D-to-3D generative model.
       - Appointed as a Top 3 Global Ambassador for the 2nd Global AI Hackathon, onboarding 7 colleges and 400+ students.
+      - Got a rank of 629 out of 23,000 (Top 2.73%) in Amazon ML Challenge 2025 for building Smart Product Pricing Model. 
     - Music & Fun Facts: He's an experienced beatboxer (8+ years), proficient with a loopstation and FL Studio, and loves producing emotional electronic/cinematic music. His music work includes a track called INSOMNIA. He has collaborated with names like Illenium, Lama and Abandoned.
     
     --- Projects (Title, Description, Tech, Link) ---

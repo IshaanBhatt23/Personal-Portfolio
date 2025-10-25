@@ -15,7 +15,7 @@ const Projects = () => {
       tech: ["Python", "TypeScript", "React", "Node.js", "SAP", "LLaMA 3", "RAG"],
       category: ["Deployed", "FullStack"],
       metrics: "Automation and Chatbot",
-      github: "https://github.com/IshaanBhatt23/sap-chatflow",
+      github: "https://sap-chatflow.vercel.app/",
       highlights: ["SAP Chatbot", "RAG", "LLM", "FullStack", "Automation"] 
     },
     {
@@ -26,7 +26,7 @@ const Projects = () => {
       category: ["Audio Tech"],
       metrics: "Multi-class audio classification",
       github: "https://github.com/IshaanBhatt23/Beatbox-Sound-Classifier",
-      highlights: ["MFCC feature extraction", "Real-time classification", "Dataset included in README"]
+      highlights: ["MFCC feature extraction", "Real-time classification", "Dataset included in README", "Audio Tech"]
     },
     {
       title: "Generative 3D Jewellery Design",

@@ -8,6 +8,16 @@ import { Github } from "lucide-react";
 
 const Projects = () => {
   const projects = [
+        {
+      title: "SAP-Chatflow",
+      subtitle: "SAP Chatbot using Llama 3 and RAG",
+      description: "SAP Chatbot made to automate logistics and HR tasks",
+      tech: ["Python", "TypeScript", "React", "Node.js", "SAP", "LLaMA 3", "RAG"],
+      category: ["Deployed", "FullStack"],
+      metrics: "Automation and Chatbot",
+      github: "https://github.com/IshaanBhatt23/sap-chatflow",
+      highlights: ["SAP Chatbot", "RAG", "LLM", "FullStack", "Automation"] 
+    },
     {
       title: "Beatbox Sound Classifier",
       subtitle: "Classify beatbox sounds (kick, hi-hats, snare, clops) with ML",
@@ -131,7 +141,7 @@ const Projects = () => {
     }
   ];
 
-  const categories = ["All", "Audio Tech", "CV", "Generative AI", "LLM/NLP", "ML Model", "Analytics", "Game"];
+  const categories = ["All", "Deployed", "FullStack", "Audio Tech", "CV", "Generative AI", "LLM/NLP", "ML Model", "Analytics", "Game"];
   const [selectedCategory, setSelectedCategory] = React.useState("All");
 
   const filteredProjects =

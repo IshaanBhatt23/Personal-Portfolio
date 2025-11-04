@@ -3,6 +3,7 @@ import type { Config } from "tailwindcss";
 export default {
   darkMode: ["class"],
   content: [
+    "./index.html",
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
@@ -12,17 +13,25 @@ export default {
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      // Tighter default padding helps small phones; you can still override per-section
+      padding: "1rem",
       screens: {
-        "2xl": "1400px",
+        sm: "640px",
+        md: "768px",
+        lg: "1024px",
+        xl: "1280px",
+        "2xl": "1440px",
       },
     },
     extend: {
+      // Extra small breakpoint for compact phones
+      screens: { xs: "375px" },
+
       colors: {
-        // --- Added for Dual Persona ---
+        // --- Dual Persona accents ---
         "dev-accent": "hsl(var(--dev-accent))",
         "music-accent": "hsl(var(--music-accent))",
-        // -----------------------------
+        // ----------------------------
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

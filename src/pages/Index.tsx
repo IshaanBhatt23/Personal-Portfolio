@@ -14,86 +14,125 @@ import Chatbot from "@/components/Chatbot";
 const developerSchema = {
   "@context": "https://schema.org",
   "@type": "Person",
-  "name": "Ishaan Bhatt",
-  "email": "ishaanbhatt2004@gmail.com",
-  "jobTitle": "AI/ML Engineer & Audio-Tech Enthusiast",
-  "alumniOf": "KIIT University",
-  "address": {
+  name: "Ishaan Bhatt",
+  email: "ishaanbhatt2004@gmail.com",
+  jobTitle: "AI/ML Engineer & Audio-Tech Enthusiast",
+  alumniOf: "KIIT University",
+  address: {
     "@type": "PostalAddress",
-    "addressLocality": "Ahmedabad",
-    "addressRegion": "Gujarat",
-    "addressCountry": "IN"
+    addressLocality: "Ahmedabad",
+    addressRegion: "Gujarat",
+    addressCountry: "IN",
   },
-  "sameAs": [
+  sameAs: [
     "https://linkedin.com/in/ishaan-bhatt-110a93256",
-    "https://github.com/IshaanBhatt23"
+    "https://github.com/IshaanBhatt23",
   ],
-  "knowsAbout": [
-    "Machine Learning", "Computer Vision", "Natural Language Processing", 
-    "Audio Processing", "Data Analytics", "Python Programming", "TensorFlow", "PyTorch"
-  ]
-};
+  knowsAbout: [
+    "Machine Learning",
+    "Computer Vision",
+    "Natural Language Processing",
+    "Audio Processing",
+    "Data Analytics",
+    "Python Programming",
+    "TensorFlow",
+    "PyTorch",
+  ],
+} as const;
 
 // SEO data for the Music personality
 const musicianSchema = {
   "@context": "https://schema.org",
   "@type": "Person",
-  "name": "Ishaan Bhatt",
-  "email": "ishaanbhatt2004@gmail.com",
-  "jobTitle": "Beatboxer & Emotional EDM Producer",
-  "alumniOf": "KIIT University",
-  "address": {
+  name: "Ishaan Bhatt",
+  email: "ishaanbhatt2004@gmail.com",
+  jobTitle: "Beatboxer & Emotional EDM Producer",
+  alumniOf: "KIIT University",
+  address: {
     "@type": "PostalAddress",
-    "addressLocality": "Ahmedabad",
-    "addressRegion": "Gujarat",
-    "addressCountry": "IN"
+    addressLocality: "Ahmedabad",
+    addressRegion: "Gujarat",
+    addressCountry: "IN",
   },
-  "sameAs": [
-    "https://www.youtube.com/@ishaanbhatt", // Placeholder, change to your actual music links
-    "https://soundcloud.com/ishaanbhatt" // Placeholder
+  sameAs: [
+    "https://www.youtube.com/@ishaanbhatt", // update to your actual links
+    "https://soundcloud.com/ishaanbhatt",
   ],
-  "knowsAbout": [
-    "Beatboxing", "Loopstation Performance", "Music Production", 
-    "FL Studio", "Sound Design", "Electronic Dance Music"
-  ]
-};
-
+  knowsAbout: [
+    "Beatboxing",
+    "Loopstation Performance",
+    "Music Production",
+    "FL Studio",
+    "Sound Design",
+    "Electronic Dance Music",
+  ],
+} as const;
 
 const Index = () => {
-  // State to manage which personality is active
+  // Persona toggle
   const [isMusicMode, setIsMusicMode] = useState(false);
-  // State to manage the active SEO schema
   const [activeSchema, setActiveSchema] = useState(developerSchema);
 
-  // Effect to update the schema when the mode changes
+  // Environment flags for mobile & motion
+  const [isTouch, setIsTouch] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  // Update schema when persona changes
   useEffect(() => {
     setActiveSchema(isMusicMode ? musicianSchema : developerSchema);
   }, [isMusicMode]);
 
+  // Detect touch + reduced motion (mirrors classes set in index.html)
+  useEffect(() => {
+    const touch =
+      "ontouchstart" in window || (navigator as any).maxTouchPoints > 0;
+    setIsTouch(touch);
+
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(mq.matches);
+    const onChange = () => setPrefersReducedMotion(mq.matches);
+    mq.addEventListener?.("change", onChange);
+    return () => mq.removeEventListener?.("change", onChange);
+  }, []);
+
   return (
-    <main className="relative">
+    <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
       {/* Dynamic Structured Data for SEO */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(activeSchema) }}
       />
-      
-      {/* Pass state and setter down to the Hero component */}
-      <Hero isMusicMode={isMusicMode} setIsMusicMode={setIsMusicMode} />
-      
-      {/* Pass state down ONLY to the About component */}
-      <About isMusicMode={isMusicMode} />
 
-      {/* All other sections are static */}
-      <Projects />
-      <Experience />
-      <Skills />
-      <Education />
-      <Contact />
-      <Chatbot />
-      <NeuralNetworkBackground />
-      <CustomCursor isMusicMode={isMusicMode} />
-    </main>
+      {/* Background (disable on touch / reduced motion for mobile perf) */}
+      {!isTouch && !prefersReducedMotion && (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none fixed inset-0 -z-10"
+        >
+          <NeuralNetworkBackground />
+        </div>
+      )}
+
+      {/* Page sections */}
+      <div className="relative z-0 space-y-20 sm:space-y-24 lg:space-y-32">
+        {/* Pass persona controls to Hero; About reads persona only */}
+        <Hero isMusicMode={isMusicMode} setIsMusicMode={setIsMusicMode} />
+        <About isMusicMode={isMusicMode} />
+
+        {/* Static sections */}
+        <Projects />
+        <Experience />
+        <Skills />
+        <Education />
+        <Contact />
+        <Chatbot />
+      </div>
+
+      {/* Fancy cursor only on non-touch and when motion is allowed */}
+      {!isTouch && !prefersReducedMotion && (
+        <CustomCursor isMusicMode={isMusicMode} />
+      )}
+    </div>
   );
 };
 

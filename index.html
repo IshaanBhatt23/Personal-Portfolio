@@ -1,14 +1,24 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="h-full">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Mobile-friendly viewport + safe areas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
     <title>Ishaan Bhatt — AI/ML Engineer & Audio-Tech Creator</title>
     <meta
       name="description"
       content="Final-year CS student at KIIT building ML systems for real problems — ridership forecasting, audio classification, 2D→3D pipelines, and interactive demos. Open to internships & collaborations."
     />
     <meta name="author" content="Ishaan Bhatt" />
+
+    <!-- Color scheme + status bar colors for mobile -->
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b0b0c" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -18,11 +28,8 @@
       rel="stylesheet"
     />
 
-    <!-- SEO Meta Tags -->
-    <meta
-      property="og:title"
-      content="Ishaan Bhatt — AI/ML Engineer & Audio-Tech Creator"
-    />
+    <!-- Open Graph -->
+    <meta property="og:title" content="Ishaan Bhatt — AI/ML Engineer & Audio-Tech Creator" />
     <meta
       property="og:description"
       content="Building ML systems and audio experiences that solve real problems — from ridership forecasting to beatbox classification."
@@ -35,16 +42,47 @@
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
 
-    <!-- Twitter Meta Tags -->
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@ishaan_dev" />
     <meta
       name="twitter:image"
       content="https://personal-portfolio-puce-delta-61.vercel.app/ishaan-profile.jpg"
     />
+
+    <!-- Optional favicon (uncomment if you have it) -->
+    <!-- <link rel="icon" href="/favicon.ico" sizes="any" /> -->
   </head>
-  <body>
+  <body class="h-full">
+    <noscript>
+      <style>
+        body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, sans-serif; padding: 1rem; }
+      </style>
+      This site needs JavaScript enabled.
+    </noscript>
+
     <div id="root"></div>
+
+    <!-- Helper: set CSS --vh so 100vh works nicely on mobile URL-bar collapse -->
+    <script>
+      (function () {
+        function setVh() {
+          var vh = window.innerHeight * 0.01;
+          document.documentElement.style.setProperty('--vh', vh + 'px');
+        }
+        setVh();
+        window.addEventListener('resize', setVh);
+        window.addEventListener('orientationchange', setVh);
+
+        // Add touch/no-touch & reduced-motion flags for components to use
+        var isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        document.documentElement.classList.add(isTouch ? 'touch' : 'no-touch');
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          document.documentElement.classList.add('reduced-motion');
+        }
+      })();
+    </script>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

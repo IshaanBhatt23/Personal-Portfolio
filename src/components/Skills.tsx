@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -56,74 +57,115 @@ const skillCategories = [
   }
 ];
 
-const allSkills = skillCategories.flatMap(category =>
-  category.skills.map(skill => skill)
-);
+const allSkills = skillCategories.flatMap((c) => c.skills);
 
 const Skills = () => {
+  // Environment flags for better mobile UX
+  const [isTouch, setIsTouch] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const touch = "ontouchstart" in window || (navigator as any).maxTouchPoints > 0;
+    setIsTouch(touch);
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(mq.matches);
+    const onChange = () => setPrefersReducedMotion(mq.matches);
+    mq.addEventListener?.("change", onChange);
+    return () => mq.removeEventListener?.("change", onChange);
+  }, []);
+
+  const badgeHover = !isTouch && !prefersReducedMotion ? { scale: 1.1 } : undefined;
+
+  const badgeClass =
+    "px-3 py-1.5 text-[11px] sm:text-sm hover:bg-accent/10 hover:border-accent transition-all cursor-default tap-target";
+
   return (
-    <section id="skills" className="py-24">
-      <div className="container mx-auto px-6">
+    <section id="skills" className="py-20 sm:py-24 scroll-mt-24">
+      <div className="container mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12 sm:mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6">
             Skills & <span className="animated-title">Expertise</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            From machine learning frameworks to cloud platforms, here's my technical toolkit
+          <p className="text-sm sm:text-base text-muted-foreground max-w-3xl mx-auto">
+            From machine learning frameworks to cloud platforms, here&apos;s my technical toolkit
           </p>
         </motion.div>
 
-        {/* Tag Cloud with Tooltips */}
-        <TooltipProvider delayDuration={200} skipDelayDuration={150}>
+        {/* Tag Cloud — tooltips disabled on touch/reduced motion (uses title=...) */}
+        {isTouch || prefersReducedMotion ? (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="flex flex-wrap justify-center gap-3 mb-16"
+            viewport={{ once: true, amount: 0.2 }}
+            className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-12 sm:mb-16"
           >
             {allSkills.map((skill, index) => (
               <motion.div
                 key={skill.name}
-                initial={{ opacity: 0, scale: 0.8 }}
+                initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.05 }}
-                whileHover={{ scale: 1.1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.02 }}
               >
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Badge
-                      variant="outline"
-                      className="px-4 py-2 text-sm hover:bg-accent/10 hover:border-accent transition-all cursor-default"
-                    >
-                      {skill.name}
-                    </Badge>
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs text-center p-2">
-                    {skill.definition}
-                  </TooltipContent>
-                </Tooltip>
+                <Badge variant="outline" className={badgeClass} title={skill.definition}>
+                  {skill.name}
+                </Badge>
               </motion.div>
             ))}
           </motion.div>
-        </TooltipProvider>
+        ) : (
+          <TooltipProvider delayDuration={200} skipDelayDuration={150}>
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ delay: 0.1 }}
+              className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-12 sm:mb-16"
+            >
+              {allSkills.map((skill, index) => (
+                <motion.div
+                  key={skill.name}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.03 }}
+                  whileHover={badgeHover}
+                >
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Badge variant="outline" className={badgeClass}>
+                        {skill.name}
+                      </Badge>
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs text-center p-2">
+                      {skill.definition}
+                    </TooltipContent>
+                  </Tooltip>
+                </motion.div>
+              ))}
+            </motion.div>
+          </TooltipProvider>
+        )}
 
         {/* Detailed Skills */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-6xl mx-auto">
           {skillCategories.map((category, categoryIndex) => (
             <motion.div
               key={category.title}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
               transition={{ delay: categoryIndex * 0.1 }}
             >
               <Card className="glass-card h-full">
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-semibold mb-6 text-center">
+                <CardContent className="p-5 sm:p-6">
+                  <h3 className="text-lg sm:text-xl font-semibold mb-5 sm:mb-6 text-center">
                     {category.title}
                   </h3>
 
@@ -131,16 +173,17 @@ const Skills = () => {
                     {category.skills.map((skill, skillIndex) => (
                       <motion.div
                         key={skill.name}
-                        initial={{ opacity: 0, x: -20 }}
+                        initial={{ opacity: 0, x: -14 }}
                         whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true, amount: 0.2 }}
                         transition={{
                           delay: categoryIndex * 0.1 + skillIndex * 0.05,
                         }}
                         className="space-y-2"
                       >
                         <div className="flex justify-between items-center">
-                          <span className="font-medium">{skill.name}</span>
-                          <span className="text-sm text-muted-foreground">
+                          <span className="font-medium text-sm sm:text-base">{skill.name}</span>
+                          <span className="text-xs sm:text-sm text-muted-foreground">
                             {skill.level}%
                           </span>
                         </div>

@@ -119,27 +119,32 @@ All colors MUST be HSL.
    Core styles
    -------------------------- */
 @layer base {
+  html, body, #root {
+    height: 100%;
+  }
+
   * {
     @apply border-border;
   }
 
   body {
-    @apply bg-background text-foreground font-inter;
-    cursor: none;
+    @apply bg-background text-foreground font-inter antialiased scroll-smooth;
+    /* Respect notches / dynamic island */
+    padding-bottom: env(safe-area-inset-bottom);
   }
 
-  a, button, [role="button"], .cursor-pointer {
-    cursor: none;
-  }
+  /* Cursor behavior:
+     - hide fancy cursor only on non-touch devices
+     - keep normal cursor for touch to avoid odd UX */
+  .no-touch body { cursor: none; }
+  .no-touch a, .no-touch button, .no-touch [role="button"], .no-touch .cursor-pointer { cursor: none; }
+  .touch body,
+  .touch a, .touch button, .touch [role="button"], .touch .cursor-pointer { cursor: auto; }
 
-  /* ✨ --- START: Custom Cursor Usability --- ✨ */
   /* Hides custom cursor on devices that don't support precise hovering (e.g., mobile) */
   @media (pointer: coarse) {
-    .custom-cursor {
-      display: none !important;
-    }
+    .custom-cursor { display: none !important; }
   }
-  /* ✨ --- END: Custom Cursor Usability --- ✨ */
 
   h1, h2, h3, h4, h5, h6 {
     @apply font-inter font-bold;
@@ -161,6 +166,11 @@ All colors MUST be HSL.
     box-shadow:
       0 0 20px hsl(var(--primary) / 0.5),
       0 0 40px hsl(var(--accent) / 0.4);
+  }
+
+  /* Tone down hover effects on touch devices (no true hover) */
+  @media (pointer: coarse) {
+    .project-card:hover { transform: none; box-shadow: var(--shadow-elegant); }
   }
 
   .project-card h3 {
@@ -232,28 +242,19 @@ All colors MUST be HSL.
     @apply bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent;
   }
 
-  /* ✨ --- START: Custom Scrollbar Styling --- ✨ */
-  /* For Webkit browsers like Chrome, Safari, Edge */
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-
+  /* ✨ --- Custom Scrollbar Styling --- ✨ */
+  ::-webkit-scrollbar { width: 8px; }
   ::-webkit-scrollbar-track {
     background: hsl(var(--secondary) / 0.5);
     border-radius: 10px;
   }
-
   ::-webkit-scrollbar-thumb {
     background: hsl(var(--primary) / 0.7);
     border-radius: 10px;
     border: 2px solid transparent;
     background-clip: content-box;
   }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--primary));
-  }
-  /* ✨ --- END: Custom Scrollbar Styling --- ✨ */
+  ::-webkit-scrollbar-thumb:hover { background: hsl(var(--primary)); }
 }
 
 /* keep existing overrides */
@@ -327,6 +328,22 @@ All colors MUST be HSL.
   animation: none !important;
   filter: none !important;
   will-change: auto !important;
+}
+
+/* --------------------------
+   Utilities for mobile
+   -------------------------- */
+@layer utilities {
+  /* Use this instead of min-h-screen to avoid mobile URL bar jump.
+     (Pairs with --vh set in index.html script) */
+  .min-h-screen-mobile { min-height: calc(var(--vh, 1vh) * 100); }
+
+  /* Fluid headings that scale nicely from phone to desktop */
+  .text-fluid-h1 { font-size: clamp(1.75rem, 6vw, 3rem); line-height: 1.1; }
+  .text-fluid-h2 { font-size: clamp(1.25rem, 4.5vw, 2rem); line-height: 1.2; }
+
+  /* Larger tap targets for buttons/links when needed */
+  .tap-target { min-height: 3rem; padding-inline: 1rem; }
 }
 
 /* End of file */

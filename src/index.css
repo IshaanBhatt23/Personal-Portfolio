@@ -230,7 +230,7 @@ All colors MUST be HSL.
     html {
       transform: scale(0.92);
       transform-origin: top center;
-      width: 108%;
+      width: 110%;
       overflow-x: hidden;
     }
 

@@ -485,3 +485,4 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode, setIsMusicMode }) => {
 };
 
 export default Hero;
+/*end of file*/

@@ -12,58 +12,38 @@ All colors MUST be HSL.
   -------------------------- */
 @layer base {
   :root {
-    /* Define the accent colors for both personas for the EphemeralHighlight component */
-    --dev-accent: 190 100% 50%;   /* Neon Cyan for Developer */
-    --music-accent: 268 80% 60%;  /* Neon Purple for Music Producer */
+    --dev-accent: 190 100% 50%;
+    --music-accent: 268 80% 60%;
 
     --background: 0 0% 0%;
     --foreground: 0 0% 98%;
-
     --card: 0 0% 8%;
     --card-foreground: 0 0% 98%;
-
     --popover: 0 0% 8%;
     --popover-foreground: 0 0% 98%;
-
-    /* Primary - Neon Cyan */
     --primary: 190 100% 50%;
     --primary-foreground: 0 0% 0%;
-
-    /* Secondary - Dark Gray */
     --secondary: 0 0% 12%;
     --secondary-foreground: 0 0% 98%;
-
     --muted: 0 0% 12%;
     --muted-foreground: 0 0% 70%;
-
-    /* Accent - Neon Purple */
     --accent: 268 80% 60%;
     --accent-foreground: 0 0% 0%;
-
-    /* Purple - Same as accent */
     --purple: 268 80% 60%;
     --purple-foreground: 0 0% 0%;
-
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-
     --border: 0 0% 15%;
     --input: 0 0% 15%;
     --ring: 190 100% 50%;
-
-    /* Effects */
     --glass-bg: 0 0% 100% / 0.05;
     --glass-border: 0 0% 100% / 0.08;
     --shadow-elegant: 0 10px 30px -10px hsl(0 0% 0% / 0.7);
     --shadow-glow: 0 0 40px hsl(190 100% 50% / 0.3);
-
-    /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(190 100% 50%), hsl(268 80% 60%));
     --gradient-accent: linear-gradient(135deg, hsl(268 80% 60%), hsl(190 100% 50%));
     --gradient-hero: linear-gradient(135deg, hsl(0 0% 0% / 0.9), hsl(0 0% 0% / 0.6));
-
     --radius: 0.75rem;
-
     --sidebar-background: 0 0% 5%;
     --sidebar-foreground: 0 0% 98%;
     --sidebar-primary: 190 100% 50%;
@@ -81,34 +61,25 @@ All colors MUST be HSL.
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 8%;
     --popover-foreground: 0 0% 98%;
-
     --primary: 190 100% 50%;
     --primary-foreground: 0 0% 0%;
-
     --secondary: 0 0% 12%;
     --secondary-foreground: 0 0% 98%;
-
     --muted: 0 0% 12%;
     --muted-foreground: 0 0% 70%;
-
     --accent: 268 80% 60%;
     --accent-foreground: 0 0% 0%;
-
     --purple: 268 80% 60%;
     --purple-foreground: 0 0% 0%;
-
     --destructive: 0 62% 51%;
     --destructive-foreground: 0 0% 98%;
-
     --border: 0 0% 15%;
     --input: 0 0% 15%;
     --ring: 190 100% 50%;
-
     --glass-bg: 0 0% 100% / 0.05;
     --glass-border: 0 0% 100% / 0.08;
     --shadow-elegant: 0 10px 30px -10px hsl(0 0% 0% / 0.7);
     --shadow-glow: 0 0 40px hsl(268 80% 60% / 0.3);
-
     --gradient-primary: linear-gradient(135deg, hsl(190 100% 50%), hsl(268 80% 60%));
     --gradient-accent: linear-gradient(135deg, hsl(268 80% 60%), hsl(190 100% 50%));
     --gradient-hero: linear-gradient(135deg, hsl(0 0% 0% / 0.9), hsl(0 0% 0% / 0.6));
@@ -129,19 +100,14 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground font-inter antialiased scroll-smooth;
-    /* Respect notches / dynamic island */
     padding-bottom: env(safe-area-inset-bottom);
   }
 
-  /* Cursor behavior:
-     - hide fancy cursor only on non-touch devices
-     - keep normal cursor for touch to avoid odd UX */
   .no-touch body { cursor: none; }
   .no-touch a, .no-touch button, .no-touch [role="button"], .no-touch .cursor-pointer { cursor: none; }
   .touch body,
   .touch a, .touch button, .touch [role="button"], .touch .cursor-pointer { cursor: auto; }
 
-  /* Hides custom cursor on devices that don't support precise hovering (e.g., mobile) */
   @media (pointer: coarse) {
     .custom-cursor { display: none !important; }
   }
@@ -151,7 +117,6 @@ All colors MUST be HSL.
     color: hsl(var(--foreground));
   }
 
-  /* === Neon Cyberpunk Project Cards === */
   .project-card {
     @apply relative rounded-xl p-6 transition-all duration-500 ease-out;
     background: hsl(var(--card) / 0.7);
@@ -168,19 +133,12 @@ All colors MUST be HSL.
       0 0 40px hsl(var(--accent) / 0.4);
   }
 
-  /* Tone down hover effects on touch devices (no true hover) */
   @media (pointer: coarse) {
     .project-card:hover { transform: none; box-shadow: var(--shadow-elegant); }
   }
 
-  .project-card h3 {
-    @apply text-lg font-bold transition-colors duration-300;
-  }
-
-  .project-card:hover h3 {
-    color: hsl(var(--primary));
-    text-shadow: 0 0 12px hsl(var(--primary) / 0.8);
-  }
+  .project-card h3 { @apply text-lg font-bold transition-colors duration-300; }
+  .project-card:hover h3 { color: hsl(var(--primary)); text-shadow: 0 0 12px hsl(var(--primary) / 0.8); }
 
   .project-pill {
     @apply inline-block text-xs font-medium px-3 py-1 rounded-full mb-3;
@@ -196,53 +154,11 @@ All colors MUST be HSL.
     color: hsl(var(--primary));
   }
 
-  .project-card .btn {
-    @apply mt-4 inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium;
-    background: var(--gradient-primary);
-    color: hsl(var(--primary-foreground));
-    transition: all 0.3s ease-in-out;
-  }
+  .glass-card { @apply bg-white/5 backdrop-blur-md border border-white/10 shadow-lg; }
+  .dark .glass-card { @apply bg-white/5 border-white/10; }
 
-  .project-card .btn:hover {
-    background: var(--gradient-accent);
-    box-shadow: 0 0 15px hsl(var(--primary) / 0.7);
-  }
+  .gradient-text { @apply bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent; }
 
-  .project-tag {
-    @apply inline-block text-xs px-2 py-1 mr-2 mb-2 rounded-md;
-    background: hsl(var(--muted) / 0.3);
-    color: hsl(var(--muted-foreground));
-    transition: all 0.2s ease;
-  }
-
-  .project-card:hover .project-tag {
-    background: hsl(var(--primary) / 0.25);
-    color: hsl(var(--primary));
-  }
-
-  /* Glass effect for generic sections */
-  .glass-card {
-    @apply bg-white/5 backdrop-blur-md border border-white/10 shadow-lg;
-  }
-
-  .dark .glass-card {
-    @apply bg-white/5 border-white/10;
-  }
-
-  .waveform {
-    animation: wave 2s infinite ease-in-out;
-  }
-
-  @keyframes wave {
-    0%, 100% { transform: scaleY(1); }
-    50% { transform: scaleY(1.5); }
-  }
-
-  .gradient-text {
-    @apply bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent;
-  }
-
-  /* ✨ --- Custom Scrollbar Styling --- ✨ */
   ::-webkit-scrollbar { width: 8px; }
   ::-webkit-scrollbar-track {
     background: hsl(var(--secondary) / 0.5);
@@ -257,21 +173,9 @@ All colors MUST be HSL.
   ::-webkit-scrollbar-thumb:hover { background: hsl(var(--primary)); }
 }
 
-/* keep existing overrides */
-.project-card:hover {
-  border-color: #00eaff;
-  box-shadow: 0 0 20px rgba(0, 234, 255, 0.4);
-}
-
-.project-card:hover .project-title {
-  color: #00eaff;
-  text-shadow: 0 0 8px rgba(0, 234, 255, 0.8);
-}
-
 /* --------------------------
-   SCOPE: Animated title foreground only
+   Animated title
    -------------------------- */
-
 @keyframes titleHueShiftFilter {
   0%   { filter: hue-rotate(0deg) saturate(1); }
   25%  { filter: hue-rotate(18deg) saturate(1.02); }
@@ -304,8 +208,6 @@ All colors MUST be HSL.
     titleHueShiftFilter 12s ease-in-out infinite,
     titleGradientMove 6s linear infinite;
   will-change: filter, background-position;
-  backface-visibility: hidden;
-  transform: translateZ(0);
   transition: transform 220ms ease;
 }
 
@@ -314,36 +216,34 @@ All colors MUST be HSL.
   animation-duration: 10s, 4s;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .animated-title {
-    animation: none !important;
-    will-change: auto;
-    background-image: none !important;
-    color: inherit !important;
-    -webkit-text-fill-color: inherit !important;
-  }
-}
-
-.static-title {
-  animation: none !important;
-  filter: none !important;
-  will-change: auto !important;
-}
-
 /* --------------------------
-   Utilities for mobile
+   Mobile utilities + Zoomed-out effect
    -------------------------- */
 @layer utilities {
-  /* Use this instead of min-h-screen to avoid mobile URL bar jump.
-     (Pairs with --vh set in index.html script) */
   .min-h-screen-mobile { min-height: calc(var(--vh, 1vh) * 100); }
-
-  /* Fluid headings that scale nicely from phone to desktop */
   .text-fluid-h1 { font-size: clamp(1.75rem, 6vw, 3rem); line-height: 1.1; }
   .text-fluid-h2 { font-size: clamp(1.25rem, 4.5vw, 2rem); line-height: 1.2; }
-
-  /* Larger tap targets for buttons/links when needed */
   .tap-target { min-height: 3rem; padding-inline: 1rem; }
+
+  /* ✅ Zoomed-out layout on small screens */
+  @media (max-width: 640px) {
+    html {
+      transform: scale(0.92);
+      transform-origin: top center;
+      width: 108%;
+      overflow-x: hidden;
+    }
+
+    body {
+      line-height: 1.8;
+      letter-spacing: 0.02em;
+    }
+
+    .glass-card {
+      padding: 1.5rem !important;
+      border-radius: 1.25rem !important;
+    }
+  }
 }
 
 /* End of file */

@@ -35,15 +35,37 @@ const Chatbot = () => {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
+  // ===== Mobile detection + scroll bob =====
+  const [isMobile, setIsMobile] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 640px)");
+    const updateMobile = () => setIsMobile(mq.matches);
+    updateMobile();
+    mq.addEventListener?.("change", updateMobile);
+    return () => mq.removeEventListener?.("change", updateMobile);
+  }, []);
+
+  useEffect(() => {
+    if (!isMobile || isOpen) return; // only bob when closed on mobile
+    const onScroll = () => setScrollY(window.scrollY || 0);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [isMobile, isOpen]);
+
+  // subtle vertical bob (-12px..+12px) based on scroll
+  const bobY = isMobile && !isOpen ? Math.sin(scrollY / 120) * 12 : 0;
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-
   useEffect(() => {
     scrollToBottom();
   }, [messages, isLoading]);
 
-  // ✨ GROQ streaming-compatible backend fetch ✨
+  // ===== GROQ streaming-compatible backend fetch =====
   const getBotReply = async (
     prompt: string,
     history: typeof messages,
@@ -99,7 +121,6 @@ const Chatbot = () => {
     - LinkedIn: https://www.linkedin.com/in/ishaan-bhatt-2004/
     - GitHub: https://github.com/IshaanBhatt23
     `;
-
     const messagesForApi = [
       { role: "system", content: systemPrompt },
       ...history.map((msg) => ({
@@ -174,7 +195,14 @@ const Chatbot = () => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div
+      className="fixed z-50 right-4 bottom-4 sm:right-6 sm:bottom-6"
+      style={{
+        transform: `translateY(${bobY}px)`,
+        // keep clear of iOS safe-area on mobile
+        bottom: isMobile ? `calc(env(safe-area-inset-bottom) + 16px)` : undefined,
+      }}
+    >
       <AnimatePresence>
         {!isOpen ? (
           <motion.button
@@ -182,12 +210,14 @@ const Chatbot = () => {
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0, transition: { duration: 0.2 } }}
-            whileTap={{ scale: 0.9 }}
-            className="bg-primary text-primary-foreground p-5 rounded-full shadow-lg hover:bg-primary/90"
+            whileTap={{ scale: 0.92 }}
+            className="bg-primary text-primary-foreground rounded-full shadow-lg hover:bg-primary/90 p-3 sm:p-5"
             style={{ boxShadow: "0 0 20px hsl(var(--primary) / 0.5)" }}
             onClick={() => setIsOpen(true)}
+            aria-label="Open chat"
           >
-            <MessageCircle className="w-8 h-8" />
+            {/* smaller icon on mobile */}
+            <MessageCircle className="w-6 h-6 sm:w-8 sm:h-8" />
           </motion.button>
         ) : (
           <motion.div
@@ -195,7 +225,8 @@ const Chatbot = () => {
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 50, scale: 0.9, transition: { duration: 0.3 } }}
-            className="w-80 h-96 rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-border"
+            className="rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-border
+                       w-[88vw] max-w-sm h-[70vh] sm:w-80 sm:h-96"
             style={{
               background: "hsl(var(--card) / 0.7)",
               backdropFilter: "blur(12px)",
@@ -204,7 +235,11 @@ const Chatbot = () => {
           >
             <div className="flex justify-between items-center px-4 py-3 bg-primary/80">
               <h3 className="font-semibold text-primary-foreground">Ishaan AI 💬</h3>
-              <button onClick={() => setIsOpen(false)} className="text-primary-foreground hover:opacity-80">
+              <button
+                onClick={() => setIsOpen(false)}
+                className="text-primary-foreground hover:opacity-80"
+                aria-label="Close chat"
+              >
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -255,6 +290,7 @@ const Chatbot = () => {
                 onClick={handleSend}
                 className="ml-2 bg-primary p-2 rounded-full hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isLoading}
+                aria-label="Send message"
               >
                 <Send className="w-4 h-4 text-primary-foreground" />
               </button>

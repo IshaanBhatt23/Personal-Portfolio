@@ -49,7 +49,7 @@ const Projects = () => {
       title: "Smart Product Pricing ",
       subtitle: "LightGBM-based multimodal model for e-commerce price prediction",
       description:
-        "Developed a LightGBM regression model combining text (TF-IDF) and image embeddings to predict product prices.",
+        "Developed an ensemble model using LightGBM regression model and HistGradientBoosting Regressor, combining text (TF-IDF) and image embeddings to predict product prices.",
       tech: ["LightGBM", "Optuna", "TF-IDF", "Python"],
       category: ["ML Model"],
       metrics: "Multimodal regression and feature fusion",

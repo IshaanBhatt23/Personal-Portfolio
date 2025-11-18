@@ -62,7 +62,7 @@ const Experience = () => {
       title: "Amazon ML Challenge 2025",
       achievement: "Top 2.73% Global Rank",
       description:
-        "Engineered a high-performing regression model using LightGBM to forecast product prices from text (TF-IDF) and image features, placing 629th out of 23,000 competitors globally.",
+        "Engineered a high-performing regression model using ensembel modelling including LightGBM and HistGradientBoosting Regressor to forecast product prices from text (TF-IDF) and image features, placing 629th out of 23,000 competitors globally.",
       year: "2025",
     },
   ];
@@ -252,3 +252,4 @@ const Experience = () => {
 };
 
 export default Experience;
+/*end of the file */

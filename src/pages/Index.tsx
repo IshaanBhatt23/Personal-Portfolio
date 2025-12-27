@@ -96,7 +96,8 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
+    // CHANGE 1: Reduced padding on mobile (px-3) to give content more width
+    <div className="relative container mx-auto px-3 sm:px-6 lg:px-8">
       {/* Dynamic Structured Data for SEO */}
       <script
         type="application/ld+json"
@@ -114,7 +115,10 @@ const Index = () => {
       )}
 
       {/* Page sections */}
-      <div className="relative z-0 space-y-20 sm:space-y-24 lg:space-y-32">
+      {/* CHANGE 2: Changed space-y-20 to space-y-10. 
+          This reduces the gap between sections from 80px to 40px on mobile. 
+          Desktop spacing (sm and lg) remains untouched. */}
+      <div className="relative z-0 space-y-10 sm:space-y-24 lg:space-y-32">
         {/* Pass persona controls to Hero; About reads persona only */}
         <Hero isMusicMode={isMusicMode} setIsMusicMode={setIsMusicMode} />
         <About isMusicMode={isMusicMode} />

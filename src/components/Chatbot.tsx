@@ -195,8 +195,9 @@ const Chatbot = () => {
   };
 
   return (
+    // CHANGE: Increased Z-Index to 9999 to ensure it floats above everything
     <div
-      className="fixed z-50 right-4 bottom-4 sm:right-6 sm:bottom-6"
+      className="fixed z-[9999] right-4 bottom-4 sm:right-6 sm:bottom-6"
       style={{
         transform: `translateY(${bobY}px)`,
         // keep clear of iOS safe-area on mobile
@@ -225,15 +226,15 @@ const Chatbot = () => {
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 50, scale: 0.9, transition: { duration: 0.3 } }}
+            // CHANGE: Updated width class to 'w-[calc(100vw-32px)]' for safer mobile margins
+            // Also ensures it doesn't get cut off on very small screens
             className="rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-border
-                       w-[88vw] max-w-sm h-[70vh] sm:w-80 sm:h-96"
+                       w-[calc(100vw-32px)] max-w-sm h-[70vh] sm:w-80 sm:h-96 bg-background/95 backdrop-blur-md"
             style={{
-              background: "hsl(var(--card) / 0.7)",
-              backdropFilter: "blur(12px)",
               boxShadow: "var(--shadow-elegant)",
             }}
           >
-            <div className="flex justify-between items-center px-4 py-3 bg-primary/80">
+            <div className="flex justify-between items-center px-4 py-3 bg-primary/90">
               <h3 className="font-semibold text-primary-foreground">Ishaan AI 💬</h3>
               <button
                 onClick={() => setIsOpen(false)}
@@ -250,8 +251,8 @@ const Chatbot = () => {
                   key={i}
                   className={`p-2.5 rounded-xl max-w-[85%] w-fit ${
                     msg.sender === "user"
-                      ? "bg-primary/90 text-primary-foreground self-end ml-auto"
-                      : "bg-secondary text-secondary-foreground"
+                      ? "bg-primary text-primary-foreground self-end ml-auto"
+                      : "bg-muted text-muted-foreground"
                   }`}
                 >
                   {msg.text.split(/(\[.*?\]\(.*?\))/g).map((part, index) => {
@@ -263,7 +264,7 @@ const Chatbot = () => {
                           href={match[2]}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-cyan-400 underline"
+                          className="text-blue-400 underline"
                         >
                           {match[1]}
                         </a>
@@ -277,13 +278,14 @@ const Chatbot = () => {
               <div ref={messagesEndRef} />
             </div>
 
-            <div className="flex items-center p-3 border-t border-border">
+            <div className="flex items-center p-3 border-t border-border bg-background">
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSend()}
                 placeholder="Ask me something..."
-                className="flex-1 bg-secondary text-white p-2 rounded-xl text-sm outline-none ring-1 ring-transparent focus:ring-primary transition-all"
+                // CHANGE: text-base prevents iOS zoom on focus
+                className="flex-1 bg-muted text-foreground p-2 rounded-xl text-base sm:text-sm outline-none ring-1 ring-transparent focus:ring-primary transition-all"
                 disabled={isLoading}
               />
               <button

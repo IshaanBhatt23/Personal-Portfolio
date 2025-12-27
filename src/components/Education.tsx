@@ -267,43 +267,47 @@ const Education = () => {
   const displayedCertifications = isExpanded ? certifications : certifications.slice(0, 6);
 
   return (
-    <section id="education" className="py-24">
-      <div className="container mx-auto px-6">
+    // CHANGE: Reduced vertical padding (py-10 for mobile)
+    <section id="education" className="py-10 md:py-24">
+      <div className="container mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ amount: 0.1 }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          // CHANGE: Reduced margin bottom (mb-8 for mobile)
+          className="text-center mb-8 md:mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+          <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6">
             Education & <span className="animated-title">Certifications</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
             Continuous learning in AI/ML, data science, and business analytics
           </p>
         </motion.div>
 
-        <div className="max-w-4xl mx-auto space-y-12">
+        {/* CHANGE: Reduced vertical spacing between sections (space-y-8 for mobile) */}
+        <div className="max-w-4xl mx-auto space-y-8 md:space-y-12">
           {/* Primary Education */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <h3 className="text-2xl font-semibold mb-6 flex items-center gap-3">
-              <GraduationCap className="w-6 h-6 text-accent" />
+            {/* CHANGE: Reduced margin bottom (mb-4 for mobile) */}
+            <h3 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6 flex items-center gap-3">
+              <GraduationCap className="w-5 h-5 md:w-6 md:h-6 text-accent" />
               Current Education
             </h3>
             
             {education.map((edu, index) => (
               <Card key={index} className="glass-card hover:shadow-glow transition-all duration-300">
-                <CardContent className="p-6">
+                <CardContent className="p-5 md:p-6">
                   <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                     <div className="flex-1">
-                      <h4 className="text-xl font-semibold mb-2">{edu.degree}</h4>
-                      <p className="text-lg text-accent font-medium mb-2">{edu.institution}</p>
-                      <p className="text-muted-foreground">{edu.location}</p>
+                      <h4 className="text-lg md:text-xl font-semibold mb-2">{edu.degree}</h4>
+                      <p className="text-base md:text-lg text-accent font-medium mb-2">{edu.institution}</p>
+                      <p className="text-sm md:text-base text-muted-foreground">{edu.location}</p>
                     </div>
                     <div className="flex flex-col gap-2">
                       <Badge variant="outline" className="w-fit">{edu.period}</Badge>
@@ -316,7 +320,7 @@ const Education = () => {
 
             <div className="mt-6">
               <h4 className="text-lg font-semibold mb-4">Previous Education</h4>
-              <div className="grid sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {previousEducation.map((school, index) => (
                   <Card key={index} className="glass-card h-full">
                     <CardContent className="p-4 flex flex-col justify-between h-full">
@@ -340,12 +344,14 @@ const Education = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
           >
-            <h3 className="text-2xl font-semibold mb-6 flex items-center gap-3">
-              <Award className="w-6 h-6 text-purple" />
+            {/* CHANGE: Reduced margin bottom (mb-4 for mobile) */}
+            <h3 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6 flex items-center gap-3">
+              <Award className="w-5 h-5 md:w-6 md:h-6 text-purple" />
               Professional Certifications
             </h3>
             
-            <div className="grid md:grid-cols-2 gap-6">
+            {/* CHANGE: Reduced grid gap (gap-4 for mobile) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               {displayedCertifications.map((cert, index) => (
                 <motion.div
                   key={index}
@@ -358,30 +364,33 @@ const Education = () => {
                     <CardHeader className="pb-3">
                       <div className="flex items-start justify-between">
                         <div className="flex-1 pr-4">
-                          <CardTitle className="text-lg mb-2">{cert.title}</CardTitle>
-                          <p className="text-accent font-medium">{cert.issuer}</p>
+                          <CardTitle className="text-base md:text-lg mb-2 leading-tight">{cert.title}</CardTitle>
+                          <p className="text-sm text-accent font-medium">{cert.issuer}</p>
                         </div>
-                        <Badge variant="outline" className="whitespace-nowrap">{cert.date}</Badge>
+                        <Badge variant="outline" className="whitespace-nowrap text-xs">{cert.date}</Badge>
                       </div>
                     </CardHeader>
                     <CardContent className="pt-0">
                       <div className="flex items-center justify-between mb-4">
-                        <div className="w-12 h-12 bg-gradient-to-r from-accent to-purple rounded-lg flex items-center justify-center">
-                          <Award className="w-6 h-6 text-white" />
+                        <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-r from-accent to-purple rounded-lg flex items-center justify-center">
+                          <Award className="w-5 h-5 md:w-6 md:h-6 text-white" />
                         </div>
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-[10px] md:text-xs text-muted-foreground">
                           ID: {cert.credentialId}
                         </div>
                       </div>
                       {cert.skills && cert.skills.length > 0 && (
                         <div className="border-t border-white/10 pt-3">
                           <h4 className="text-xs font-semibold mb-2 text-muted-foreground">Skills:</h4>
-                          <div className="flex flex-wrap gap-2">
-                            {cert.skills.map((skill, i) => (
-                              <Badge key={i} variant="secondary" className="text-xs">
+                          <div className="flex flex-wrap gap-1.5 md:gap-2">
+                            {cert.skills.slice(0, 5).map((skill, i) => (
+                              <Badge key={i} variant="secondary" className="text-[10px] md:text-xs">
                                 {skill}
                               </Badge>
                             ))}
+                            {cert.skills.length > 5 && (
+                              <Badge variant="outline" className="text-[10px] md:text-xs">+{cert.skills.length - 5}</Badge>
+                            )}
                           </div>
                         </div>
                       )}

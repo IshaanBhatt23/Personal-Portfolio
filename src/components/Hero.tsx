@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import * as THREE from "three";
 
 interface HeroProps {
-  isMusicMode?: boolean; // Made optional to prevent strict type errors if not passed immediately
+  isMusicMode?: boolean; 
   setIsMusicMode?: (isMusicMode: boolean) => void;
 }
 
@@ -122,7 +122,6 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode = false, setIsMusicMode = () =>
     return () => mq.removeEventListener?.("change", onChange);
   }, []);
 
-  // Magnetic buttons: only enable on non-touch + motion allowed
   const magneticEnabled = !isTouch && !prefersReducedMotion;
   const magneticViewWork = useMagnetic(0.12, magneticEnabled);
   const magneticDownload = useMagnetic(0.08, magneticEnabled);
@@ -285,7 +284,7 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode = false, setIsMusicMode = () =>
     return (
       <div
         ref={containerRef}
-        className="absolute inset-0 z-10 pointer-events-none" // Added pointer-events-none so it doesn't block clicks
+        className="absolute inset-0 z-10 pointer-events-none"
         style={{
           display: "grid",
           gridTemplateColumns: `repeat(${cols}, 1fr)`,
@@ -323,17 +322,17 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode = false, setIsMusicMode = () =>
   };
 
   return (
-    // ✅ Main Change: Used 'bg-black' to match index.tsx and prevent gray blocks. 
-    // 'relative' and 'overflow-hidden' ensure the purple background stays INSIDE this component.
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black text-white py-12">
+    // CHANGE: min-h-auto and py-20 for mobile (content dependent height), 
+    // md:min-h-screen for desktop (full height).
+    <section className="relative min-h-auto md:min-h-screen flex items-center justify-center overflow-hidden bg-black text-white py-20 md:py-0">
       
-      {/* Three.js canvas mount - z-0 puts it behind content */}
+      {/* Three.js canvas mount */}
       <div ref={mountRef} className="absolute inset-0 z-0 opacity-60" />
 
       {/* Subtle dots */}
       <InteractiveDots />
 
-      {/* Quick contact button - Fixed position (will float on scroll) */}
+      {/* Quick contact button - Fixed position */}
       <motion.div
         initial={{ opacity: 0, y: -100 }}
         animate={{ opacity: 1, y: 0 }}
@@ -347,12 +346,13 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode = false, setIsMusicMode = () =>
         </a>
       </motion.div>
 
-      <div className="container mx-auto px-6 md:px-6 text-center z-20 flex flex-col items-center justify-center relative">
+      <div className="container mx-auto px-4 md:px-6 text-center z-20 flex flex-col items-center justify-center relative">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className={`w-full max-w-[90%] sm:max-w-4xl p-6 sm:p-10 rounded-3xl border border-white/10 bg-black/40 backdrop-blur-xl shadow-2xl transition-shadow duration-500 ${
+          // Slightly reduced padding on mobile (p-5 vs p-6)
+          className={`w-full max-w-[95%] sm:max-w-4xl p-5 sm:p-10 rounded-3xl border border-white/10 bg-black/40 backdrop-blur-xl shadow-2xl transition-shadow duration-500 ${
             isMusicMode ? "shadow-orange-500/20" : "shadow-purple-500/20"
           }`}
         >
@@ -397,7 +397,7 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode = false, setIsMusicMode = () =>
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="text-3xl sm:text-5xl md:text-6xl font-bold mb-4 min-h-[48px] sm:min-h-[84px]"
+            className="text-3xl sm:text-5xl md:text-6xl font-bold mb-3 sm:mb-4 min-h-[40px] sm:min-h-[84px]"
           >
             <span
               className={`text-transparent bg-clip-text bg-gradient-to-r transition-all duration-500 ${
@@ -418,7 +418,7 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode = false, setIsMusicMode = () =>
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="text-lg sm:text-2xl font-semibold text-gray-300 mb-4 px-2"
+            className="text-lg sm:text-2xl font-semibold text-gray-300 mb-3 sm:mb-4 px-2"
           >
             <AnimatePresence mode="wait">
               <motion.span
@@ -435,7 +435,7 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode = false, setIsMusicMode = () =>
             </AnimatePresence>
           </motion.h2>
 
-          {/* Description */}
+          {/* Description - Reduced mb-8 to mb-6 for mobile tightness */}
           <AnimatePresence mode="wait">
             <motion.p
               key={isMusicMode ? "music-desc" : "dev-desc"}
@@ -443,7 +443,7 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode = false, setIsMusicMode = () =>
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ delay: 0.1, duration: 0.4 }}
-              className="text-sm sm:text-lg text-gray-400 mb-8 max-w-2xl mx-auto leading-relaxed px-2"
+              className="text-sm sm:text-lg text-gray-400 mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed px-2"
             >
               {isMusicMode
                 ? "Crafting beats and melodies as a loopstation artist, blending human vocals with electronic soundscapes."

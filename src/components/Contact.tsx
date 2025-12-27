@@ -130,7 +130,8 @@ const Contact = () => {
     setFormData((prev) => ({ ...prev, [field]: value }));
 
   return (
-    <section id="contact" className="py-20 sm:py-24 bg-secondary/30 scroll-mt-24">
+    // CHANGE: Reduced vertical padding (py-10 for mobile)
+    <section id="contact" className="py-10 md:py-24 bg-secondary/30 scroll-mt-24">
       <div className="container mx-auto px-4 sm:px-6">
         {/* Header */}
         <motion.div
@@ -138,7 +139,8 @@ const Contact = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12 sm:mb-16"
+          // CHANGE: Reduced margin bottom (mb-8 for mobile)
+          className="text-center mb-8 sm:mb-16"
         >
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6">
             Let&apos;s <span className="animated-title">Connect</span>
@@ -165,7 +167,8 @@ const Contact = () => {
                 <CardTitle className="text-xl sm:text-2xl">Send Message</CardTitle>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+                {/* CHANGE: Tighter space-y-4 for mobile form elements */}
+                <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5" noValidate>
                   {/* Honeypot (hidden) */}
                   <input type="text" name="botcheck" className="hidden" tabIndex={-1} autoComplete="off" />
 

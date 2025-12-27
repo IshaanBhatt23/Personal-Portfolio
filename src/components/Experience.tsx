@@ -107,14 +107,16 @@ const Experience = () => {
   const viewportCfg = { once: false, amount: 0.2 };
 
   return (
-    <section id="experience" className="py-20 sm:py-24 bg-secondary/30">
+    // CHANGE: Reduced vertical padding (py-10 instead of py-20 on mobile)
+    <section id="experience" className="py-10 md:py-24 bg-secondary/30">
       <div className="container mx-auto px-4 sm:px-6">
         <motion.div
           variants={sectionFade}
           initial="hidden"
           whileInView="show"
           viewport={viewportCfg}
-          className="text-center mb-12 sm:mb-16"
+          // CHANGE: Reduced margin bottom (mb-8 instead of mb-12 on mobile)
+          className="text-center mb-8 sm:mb-16"
           style={prefersReducedMotion ? { opacity: 1, transform: "none" } : undefined}
         >
           <h2 className="text-3xl md:text-5xl font-bold mb-4 sm:mb-6">
@@ -126,7 +128,8 @@ const Experience = () => {
         </motion.div>
 
         {/* Professional Experience */}
-        <div className="max-w-5xl mx-auto mb-14 sm:mb-16">
+        {/* CHANGE: Reduced margin bottom (mb-10 instead of mb-14 on mobile) */}
+        <div className="max-w-5xl mx-auto mb-10 sm:mb-16">
           <h3 className="text-xl sm:text-2xl font-semibold mb-6 sm:mb-8">Professional Experience</h3>
 
           <div className="space-y-6 sm:space-y-8">
@@ -141,7 +144,8 @@ const Experience = () => {
                 style={prefersReducedMotion ? { opacity: 1, transform: "none" } : undefined}
               >
                 <Card className="glass-card hover:shadow-glow transition-all duration-300">
-                  <CardHeader className="pb-4">
+                  {/* CHANGE: Reduced padding-bottom (pb-3 on mobile) */}
+                  <CardHeader className="pb-3 sm:pb-4">
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 sm:gap-4">
                       <div>
                         <CardTitle className="text-lg sm:text-xl mb-1 sm:mb-2">{exp.title}</CardTitle>
@@ -173,7 +177,8 @@ const Experience = () => {
                       initial="hidden"
                       whileInView="show"
                       viewport={viewportCfg}
-                      className="space-y-3 sm:space-y-3.5"
+                      // CHANGE: Tighter spacing for list items on mobile (space-y-2)
+                      className="space-y-2 sm:space-y-3.5"
                     >
                       {exp.achievements.map((achievement) => (
                         <motion.li
@@ -252,4 +257,3 @@ const Experience = () => {
 };
 
 export default Experience;
-/*end of the file */

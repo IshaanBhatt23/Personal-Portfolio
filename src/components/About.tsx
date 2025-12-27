@@ -95,7 +95,8 @@ const About: React.FC<AboutProps> = ({ isMusicMode }) => {
     <TooltipProvider>
       <section
         id="about"
-        className="py-20 sm:py-24 bg-secondary/30 scroll-mt-24"
+        // CHANGE: Reduced padding (py-10 instead of py-20 on mobile)
+        className="py-10 md:py-24 bg-secondary/30 scroll-mt-24"
         ref={sectionRef}
       >
         <div className="container mx-auto px-4 sm:px-6">
@@ -112,19 +113,21 @@ const About: React.FC<AboutProps> = ({ isMusicMode }) => {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: false, amount: 0.5 }}
-              className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-10 sm:mb-16"
+              // CHANGE: Reduced margin bottom (mb-6 instead of mb-10 on mobile)
+              className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-6 sm:mb-16"
             >
               About <span className="animated-title">Me</span>
             </motion.h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 items-start">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-12 items-start">
               {/* Long Description — slide-from-left each time it enters view */}
               <motion.div
                 initial={{ opacity: 0, x: -40 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: false, amount: 0.3 }}
                 transition={{ duration: prefersReducedMotion ? 0.2 : 0.5 }}
-                className="space-y-6"
+                // CHANGE: Slightly tighter space-y-4 on mobile
+                className="space-y-4 sm:space-y-6"
               >
                 {isMusicMode ? (
                   <p className="text-base sm:text-lg leading-relaxed text-muted-foreground">
@@ -196,7 +199,8 @@ const About: React.FC<AboutProps> = ({ isMusicMode }) => {
                 transition={{ duration: prefersReducedMotion ? 0.2 : 0.5 }}
                 className="space-y-4"
               >
-                <h3 className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6">Fun Facts</h3>
+                {/* CHANGE: Reduced margin bottom for header */}
+                <h3 className="text-xl sm:text-2xl font-semibold mb-3 sm:mb-6">Fun Facts</h3>
 
                 {/* Status Gauge */}
                 <motion.div
@@ -275,7 +279,8 @@ const About: React.FC<AboutProps> = ({ isMusicMode }) => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false, amount: 0.35 }}
               transition={{ duration: prefersReducedMotion ? 0.2 : 0.5 }}
-              className="mt-12 sm:mt-16 text-center space-y-6 sm:space-y-8"
+              // CHANGE: Reduced top margin (mt-8 instead of mt-12 on mobile)
+              className="mt-8 sm:mt-16 text-center space-y-6 sm:space-y-8"
             >
               <Card className="glass-card p-6 sm:p-8">
                 <CardContent className="p-0">

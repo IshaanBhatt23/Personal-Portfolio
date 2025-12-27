@@ -4,12 +4,13 @@ export const NeuralNetworkBackground: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rafRef = useRef<number | null>(null);
 
-  // Disable on touch / reduced-motion for perf & accessibility
+  // CHANGED: Removed "!isTouch" here so it stays enabled on phones
   const [enabled, setEnabled] = useState(true);
+
   useEffect(() => {
-    const isTouch = "ontouchstart" in window || (navigator as any).maxTouchPoints > 0;
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setEnabled(!isTouch && !mq.matches);
+    // We only disable if the user specifically requests reduced motion
+    const update = () => setEnabled(!mq.matches);
     update();
     mq.addEventListener?.("change", update);
     return () => mq.removeEventListener?.("change", update);
@@ -21,6 +22,9 @@ export const NeuralNetworkBackground: React.FC = () => {
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+
+    // Check if device is touch (Phone/Tablet)
+    const isTouch = "ontouchstart" in window || (navigator as any).maxTouchPoints > 0;
 
     // DPI-aware sizing
     const setCanvasSize = () => {
@@ -36,12 +40,18 @@ export const NeuralNetworkBackground: React.FC = () => {
     setCanvasSize();
 
     // Mouse tracking
-    const mouse = { x: -100, y: -100, radius: 140 };
+    // CHANGED: Start way off-screen (-9999) so no lines appear by default
+    const mouse = { x: -9999, y: -9999, radius: 140 };
+
     const onMove = (e: MouseEvent) => {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
     };
-    window.addEventListener("mousemove", onMove, { passive: true });
+
+    // CHANGED: Only enable interaction if it is NOT a touch device (PC only)
+    if (!isTouch) {
+      window.addEventListener("mousemove", onMove, { passive: true });
+    }
 
     // Particles
     class Particle {
@@ -54,10 +64,10 @@ export const NeuralNetworkBackground: React.FC = () => {
         this.size = size;
       }
       draw() {
-        ctx.fillStyle = "rgba(255,255,255,0.7)";
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
+        ctx!.fillStyle = "rgba(255,255,255,0.7)";
+        ctx!.beginPath();
+        ctx!.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx!.fill();
       }
     }
 
@@ -89,12 +99,12 @@ export const NeuralNetworkBackground: React.FC = () => {
           const dy = pa.y - pb.y;
           const dist = Math.hypot(dx, dy);
           if (dist < maxDist) {
-            ctx.strokeStyle = `rgba(0,200,255,${1 - dist / maxDist})`;
-            ctx.lineWidth = 0.5;
-            ctx.beginPath();
-            ctx.moveTo(pa.x, pa.y);
-            ctx.lineTo(pb.x, pb.y);
-            ctx.stroke();
+            ctx!.strokeStyle = `rgba(0,200,255,${1 - dist / maxDist})`;
+            ctx!.lineWidth = 0.5;
+            ctx!.beginPath();
+            ctx!.moveTo(pa.x, pa.y);
+            ctx!.lineTo(pb.x, pb.y);
+            ctx!.stroke();
           }
         }
       }
@@ -107,16 +117,17 @@ export const NeuralNetworkBackground: React.FC = () => {
         p.draw();
 
         // Orange line from mouse to nearby particles
+        // This will only happen if mouse is updated (which we disabled on touch)
         const dx = mouse.x - p.x;
         const dy = mouse.y - p.y;
         const dist = Math.hypot(dx, dy);
         if (dist < mouse.radius) {
-          ctx.strokeStyle = `rgba(255,136,0,${1 - dist / mouse.radius})`;
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(p.x, p.y);
-          ctx.lineTo(mouse.x, mouse.y);
-          ctx.stroke();
+          ctx!.strokeStyle = `rgba(255,136,0,${1 - dist / mouse.radius})`;
+          ctx!.lineWidth = 1;
+          ctx!.beginPath();
+          ctx!.moveTo(p.x, p.y);
+          ctx!.lineTo(mouse.x, mouse.y);
+          ctx!.stroke();
         }
       }
 
@@ -135,7 +146,10 @@ export const NeuralNetworkBackground: React.FC = () => {
 
     return () => {
       window.removeEventListener("resize", onResize);
-      window.removeEventListener("mousemove", onMove);
+      // Clean up mouse listener only if we added it
+      if (!isTouch) {
+        window.removeEventListener("mousemove", onMove);
+      }
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, [enabled]);

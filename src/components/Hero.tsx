@@ -324,7 +324,7 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode = false, setIsMusicMode = () =>
   return (
     // CHANGE: min-h-auto and py-20 for mobile (content dependent height), 
     // md:min-h-screen for desktop (full height).
-    <section className="relative min-h-auto md:min-h-screen flex items-center justify-center overflow-hidden bg-black text-white py-20 md:py-0">
+    <section className="relative h-[850px] flex items-center justify-center overflow-hidden bg-black text-white">
       
       {/* Three.js canvas mount */}
       <div ref={mountRef} className="absolute inset-0 z-0 opacity-60" />

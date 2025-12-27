@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import * as THREE from "three";
 
 interface HeroProps {
-  isMusicMode: boolean;
-  setIsMusicMode: (isMusicMode: boolean) => void;
+  isMusicMode?: boolean; // Made optional to prevent strict type errors if not passed immediately
+  setIsMusicMode?: (isMusicMode: boolean) => void;
 }
 
 /* =========================================================
@@ -102,7 +102,7 @@ const useTypingAnimation = (text: string, speed = 150, delay = 2000) => {
   return displayText;
 };
 
-const Hero: React.FC<HeroProps> = ({ isMusicMode, setIsMusicMode }) => {
+const Hero: React.FC<HeroProps> = ({ isMusicMode = false, setIsMusicMode = () => {} }) => {
   const mountRef = useRef<HTMLDivElement | null>(null);
   const mousePos = useRef({ x: 0, y: 0 });
   const scrollPos = useRef(0);
@@ -143,13 +143,13 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode, setIsMusicMode }) => {
       1000
     );
     
-    // MODIFIED: Zoom out on mobile (z = 24) to make background look smaller
+    // Zoom out on mobile
     const isMobile = window.innerWidth < 768;
     camera.position.z = isMobile ? 24 : 15;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(currentMount.clientWidth, currentMount.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // cap for mobile perf
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     currentMount.appendChild(renderer.domElement);
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
@@ -183,7 +183,7 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode, setIsMusicMode }) => {
 
     const smallScreen = window.innerWidth < 640;
     const radius = 12;
-    const nodeCount = smallScreen ? 20 : 40; // fewer nodes on phones
+    const nodeCount = smallScreen ? 20 : 40;
     for (let i = 0; i < nodeCount; i++) {
       const nodeGeometry = geometries[Math.floor(Math.random() * geometries.length)];
       const mesh = new THREE.Mesh(nodeGeometry, nodeMaterial);
@@ -236,7 +236,6 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode, setIsMusicMode }) => {
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
       
-      // Update Z position on resize as well
       const isMobile = width < 768;
       camera.position.z = isMobile ? 24 : 15;
       
@@ -251,7 +250,6 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode, setIsMusicMode }) => {
       window.removeEventListener("scroll", handleScroll);
       if (currentMount && renderer.domElement) currentMount.removeChild(renderer.domElement);
 
-      // Dispose geometries/materials to avoid leaks
       group.traverse((obj: THREE.Object3D) => {
         const mesh = obj as THREE.Mesh;
         if (mesh.geometry) mesh.geometry.dispose();
@@ -262,7 +260,7 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode, setIsMusicMode }) => {
   }, [isMusicMode, isTouch, prefersReducedMotion]);
 
   /* =========================================================
-     InteractiveDots — disabled on touch/reduced-motion
+     InteractiveDots
      ========================================================= */
   const InteractiveDots = () => {
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -287,7 +285,7 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode, setIsMusicMode }) => {
     return (
       <div
         ref={containerRef}
-        className="absolute inset-0 z-10"
+        className="absolute inset-0 z-10 pointer-events-none" // Added pointer-events-none so it doesn't block clicks
         style={{
           display: "grid",
           gridTemplateColumns: `repeat(${cols}, 1fr)`,
@@ -325,14 +323,17 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode, setIsMusicMode }) => {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gray-900 text-white py-12">
-      {/* Three.js canvas mount */}
+    // ✅ Main Change: Used 'bg-black' to match index.tsx and prevent gray blocks. 
+    // 'relative' and 'overflow-hidden' ensure the purple background stays INSIDE this component.
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black text-white py-12">
+      
+      {/* Three.js canvas mount - z-0 puts it behind content */}
       <div ref={mountRef} className="absolute inset-0 z-0 opacity-60" />
 
-      {/* Subtle dots (desktop only / motion allowed) */}
+      {/* Subtle dots */}
       <InteractiveDots />
 
-      {/* Quick contact button */}
+      {/* Quick contact button - Fixed position (will float on scroll) */}
       <motion.div
         initial={{ opacity: 0, y: -100 }}
         animate={{ opacity: 1, y: 0 }}
@@ -346,16 +347,11 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode, setIsMusicMode }) => {
         </a>
       </motion.div>
 
-      {/* MODIFIED: Added flexible container with padding for floating card effect on mobile */}
-      <div className="container mx-auto px-6 md:px-6 text-center z-20 flex flex-col items-center justify-center">
+      <div className="container mx-auto px-6 md:px-6 text-center z-20 flex flex-col items-center justify-center relative">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          /* MODIFIED: 
-             - w-full with max-w constraint for mobile floating card look
-             - Added stronger background contrast (bg-black/40) to match screenshot
-          */
           className={`w-full max-w-[90%] sm:max-w-4xl p-6 sm:p-10 rounded-3xl border border-white/10 bg-black/40 backdrop-blur-xl shadow-2xl transition-shadow duration-500 ${
             isMusicMode ? "shadow-orange-500/20" : "shadow-purple-500/20"
           }`}
@@ -460,14 +456,12 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode, setIsMusicMode }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            /* MODIFIED: flex-row instead of flex-col to keep buttons side-by-side on mobile */
             className="flex flex-row flex-wrap sm:flex-nowrap gap-3 justify-center mb-6"
           >
             <a href="#projects" className="flex-1 sm:flex-none">
               <button
                 ref={magneticViewWork.ref}
                 style={magneticViewWork.style}
-                /* MODIFIED: px-4 text-sm for mobile compactness */
                 className={`w-full sm:w-auto px-4 sm:px-8 py-3 text-sm sm:text-lg font-semibold bg-gradient-to-r rounded-lg hover:scale-105 transition-all transform-gpu flex items-center justify-center gap-2 tap-target ${
                   isMusicMode ? "from-orange-600 to-red-600" : "from-purple-600 to-pink-600"
                 }`}
@@ -480,7 +474,6 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode, setIsMusicMode }) => {
               <button
                 ref={magneticDownload.ref}
                 style={magneticDownload.style}
-                /* MODIFIED: px-4 text-sm for mobile compactness */
                 className="w-full sm:w-auto px-4 sm:px-8 py-3 text-sm sm:text-lg font-semibold bg-white/5 border border-white/20 rounded-lg hover:bg-white/10 hover:scale-105 transition-all transform-gpu flex items-center justify-center gap-2 tap-target"
               >
                 <Download className="w-4 h-4 sm:w-5 sm:h-5" />

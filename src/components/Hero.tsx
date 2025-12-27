@@ -142,7 +142,10 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode, setIsMusicMode }) => {
       0.1,
       1000
     );
-    camera.position.z = 15;
+    
+    // MODIFIED: Zoom out on mobile (z = 24) to make background look smaller
+    const isMobile = window.innerWidth < 768;
+    camera.position.z = isMobile ? 24 : 15;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(currentMount.clientWidth, currentMount.clientHeight);
@@ -228,9 +231,16 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode, setIsMusicMode }) => {
     animate();
 
     const handleResize = () => {
-      camera.aspect = currentMount.clientWidth / currentMount.clientHeight;
+      const width = currentMount.clientWidth;
+      const height = currentMount.clientHeight;
+      camera.aspect = width / height;
       camera.updateProjectionMatrix();
-      renderer.setSize(currentMount.clientWidth, currentMount.clientHeight);
+      
+      // Update Z position on resize as well
+      const isMobile = width < 768;
+      camera.position.z = isMobile ? 24 : 15;
+      
+      renderer.setSize(width, height);
     };
     window.addEventListener("resize", handleResize);
 
@@ -315,7 +325,7 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode, setIsMusicMode }) => {
   };
 
   return (
-    <section className="relative min-h-screen-mobile flex items-center justify-center overflow-hidden bg-gray-900 text-white">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gray-900 text-white py-12">
       {/* Three.js canvas mount */}
       <div ref={mountRef} className="absolute inset-0 z-0 opacity-60" />
 
@@ -336,17 +346,22 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode, setIsMusicMode }) => {
         </a>
       </motion.div>
 
-      <div className="container mx-auto px-4 sm:px-6 text-center z-20">
+      {/* MODIFIED: Added flexible container with padding for floating card effect on mobile */}
+      <div className="container mx-auto px-6 md:px-6 text-center z-20 flex flex-col items-center justify-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className={`p-6 sm:p-10 rounded-3xl max-w-4xl mx-auto border border-white/10 bg-black/30 backdrop-blur-xl shadow-2xl transition-shadow duration-500 ${
+          /* MODIFIED: 
+             - w-full with max-w constraint for mobile floating card look
+             - Added stronger background contrast (bg-black/40) to match screenshot
+          */
+          className={`w-full max-w-[90%] sm:max-w-4xl p-6 sm:p-10 rounded-3xl border border-white/10 bg-black/40 backdrop-blur-xl shadow-2xl transition-shadow duration-500 ${
             isMusicMode ? "shadow-orange-500/20" : "shadow-purple-500/20"
           }`}
         >
           {/* Profile Images */}
-          <motion.div className="mb-8 relative w-56 h-36 sm:w-64 sm:h-40 mx-auto flex items-center justify-center">
+          <motion.div className="mb-6 relative w-48 h-32 sm:w-64 sm:h-40 mx-auto flex items-center justify-center">
             {/* Developer */}
             <motion.img
               src="/ishaan-profile.jpg"
@@ -354,7 +369,7 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode, setIsMusicMode }) => {
               loading="eager"
               width={160}
               height={160}
-              className={`absolute w-32 h-32 sm:w-40 sm:h-40 rounded-full object-cover cursor-pointer shadow-lg ring-4 transition-all duration-500 ${
+              className={`absolute w-28 h-28 sm:w-40 sm:h-40 rounded-full object-cover cursor-pointer shadow-lg ring-4 transition-all duration-500 ${
                 isMusicMode ? "shadow-purple-500/30 ring-purple-500/40" : "shadow-purple-500/30 ring-purple-500/40"
               }`}
               variants={imageVariants}
@@ -370,7 +385,7 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode, setIsMusicMode }) => {
               loading="lazy"
               width={160}
               height={160}
-              className={`absolute w-32 h-32 sm:w-40 sm:h-40 rounded-full object-cover cursor-pointer shadow-lg ring-4 transition-all duration-500 ${
+              className={`absolute w-28 h-28 sm:w-40 sm:h-40 rounded-full object-cover cursor-pointer shadow-lg ring-4 transition-all duration-500 ${
                 isMusicMode ? "shadow-orange-500/30 ring-orange-500/40" : "shadow-orange-500/30 ring-orange-500/40"
               }`}
               variants={imageVariants}
@@ -386,7 +401,7 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode, setIsMusicMode }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="text-fluid-h1 font-bold mb-6 min-h-[72px] sm:min-h-[84px]"
+            className="text-3xl sm:text-5xl md:text-6xl font-bold mb-4 min-h-[48px] sm:min-h-[84px]"
           >
             <span
               className={`text-transparent bg-clip-text bg-gradient-to-r transition-all duration-500 ${
@@ -396,7 +411,7 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode, setIsMusicMode }) => {
               {animatedName}
             </span>
             <span
-              className={`inline-block align-middle w-1 h-10 sm:h-12 ml-1 animate-ping transition-colors duration-500 ${
+              className={`inline-block align-middle w-1 h-8 sm:h-12 ml-1 animate-ping transition-colors duration-500 ${
                 isMusicMode ? "bg-orange-400" : "bg-purple-400"
               }`}
             />
@@ -407,7 +422,7 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode, setIsMusicMode }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="text-xl sm:text-2xl font-semibold text-gray-300 mb-6"
+            className="text-lg sm:text-2xl font-semibold text-gray-300 mb-4 px-2"
           >
             <AnimatePresence mode="wait">
               <motion.span
@@ -418,7 +433,7 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode, setIsMusicMode }) => {
                 transition={{ duration: 0.3 }}
               >
                 {isMusicMode
-                  ? "Beatboxer & Emotional Electronic Music Producer"
+                  ? "Beatboxer & Electronic Music Producer"
                   : "AI / ML Developer & Audio-Tech Enthusiast"}
               </motion.span>
             </AnimatePresence>
@@ -432,7 +447,7 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode, setIsMusicMode }) => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ delay: 0.1, duration: 0.4 }}
-              className="text-base sm:text-lg text-gray-400 mb-8 max-w-2xl mx-auto leading-relaxed"
+              className="text-sm sm:text-lg text-gray-400 mb-8 max-w-2xl mx-auto leading-relaxed px-2"
             >
               {isMusicMode
                 ? "Crafting beats and melodies as a loopstation artist, blending human vocals with electronic soundscapes."
@@ -445,36 +460,40 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode, setIsMusicMode }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center mb-8"
+            /* MODIFIED: flex-row instead of flex-col to keep buttons side-by-side on mobile */
+            className="flex flex-row flex-wrap sm:flex-nowrap gap-3 justify-center mb-6"
           >
-            <a href="#projects">
+            <a href="#projects" className="flex-1 sm:flex-none">
               <button
                 ref={magneticViewWork.ref}
                 style={magneticViewWork.style}
-                className={`w-full sm:w-auto px-8 py-3 text-lg font-semibold bg-gradient-to-r rounded-lg hover:scale-105 transition-all transform-gpu flex items-center justify-center gap-2 tap-target ${
+                /* MODIFIED: px-4 text-sm for mobile compactness */
+                className={`w-full sm:w-auto px-4 sm:px-8 py-3 text-sm sm:text-lg font-semibold bg-gradient-to-r rounded-lg hover:scale-105 transition-all transform-gpu flex items-center justify-center gap-2 tap-target ${
                   isMusicMode ? "from-orange-600 to-red-600" : "from-purple-600 to-pink-600"
                 }`}
               >
-                View Work <ChevronRight className="w-5 h-5" />
+                View Work <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
             </a>
 
-            <a href="/Ishaan-Bhatt_Resume.pdf" download="Ishaan-Bhatt-Resume.pdf">
+            <a href="/Ishaan-Bhatt_Resume.pdf" download="Ishaan-Bhatt-Resume.pdf" className="flex-1 sm:flex-none">
               <button
                 ref={magneticDownload.ref}
                 style={magneticDownload.style}
-                className="w-full sm:w-auto px-8 py-3 text-lg font-semibold bg-white/5 border border-white/20 rounded-lg hover:bg-white/10 hover:scale-105 transition-all transform-gpu flex items-center justify-center gap-2 tap-target"
+                /* MODIFIED: px-4 text-sm for mobile compactness */
+                className="w-full sm:w-auto px-4 sm:px-8 py-3 text-sm sm:text-lg font-semibold bg-white/5 border border-white/20 rounded-lg hover:bg-white/10 hover:scale-105 transition-all transform-gpu flex items-center justify-center gap-2 tap-target"
               >
-                <Download className="w-5 h-5" />
-                Download Resume
+                <Download className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="hidden xs:inline">Resume</span>
+                <span className="xs:hidden">Resume</span>
               </button>
             </a>
           </motion.div>
 
           {/* Contact snippet */}
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }} className="space-y-2 text-sm text-gray-400">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }} className="space-y-2 text-xs sm:text-sm text-gray-500">
             <div className="flex items-center justify-center gap-2">
-              <MapPin className="w-4 h-4" />
+              <MapPin className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>Ahmedabad, Gujarat, India</span>
             </div>
           </motion.div>
@@ -485,4 +504,3 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode, setIsMusicMode }) => {
 };
 
 export default Hero;
-/*end of file*/

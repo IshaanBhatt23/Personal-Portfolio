@@ -35,8 +35,10 @@ export const NeuralNetworkBackground: React.FC = () => {
 
     setCanvasSize();
 
-    // Mouse interaction radius
-    const mouse = { x: -9999, y: -9999, radius: 220 };
+    // --- MOUSE RADIUS FIX ---
+    // Reduced from 240 -> 160.
+    // This stops the "starburst" effect by connecting to fewer, closer nodes.
+    const mouse = { x: -9999, y: -9999, radius: 160 };
 
     const onMove = (e: MouseEvent) => {
       mouse.x = e.clientX;
@@ -80,26 +82,22 @@ export const NeuralNetworkBackground: React.FC = () => {
       particles = [];
       const area = window.innerWidth * window.innerHeight;
 
-      // --- ULTRA DENSITY ---
-      // area / 7000 = Very high density
+      // Maintain High Density settings
       const base = area / 7000;
-      
-      // Increased Max Limit significantly for PC
-      const maxParticles = isTouch ? 110 : 400;
-      
+      const maxParticles = isTouch ? 180 : 400;
       const count = Math.max(80, Math.min(base, maxParticles));
+      const sizeMultiplier = isTouch ? 2.5 : 1;
 
       for (let i = 0; i < Math.floor(count); i++) {
         const x = Math.random() * window.innerWidth;
         const y = Math.random() * window.innerHeight;
-        const size = Math.random() * 1.5 + 1;
+        const size = (Math.random() * 1.5 + 1) * sizeMultiplier;
         particles.push(new Particle(x, y, size));
       }
     };
 
     const connectParticles = () => {
-      // 150 = Good reach to prevent solo nodes
-      const maxDist = 150; 
+      const maxDist = 160; 
 
       for (let a = 0; a < particles.length; a++) {
         const pa = particles[a];
@@ -110,9 +108,8 @@ export const NeuralNetworkBackground: React.FC = () => {
           const dist = Math.hypot(dx, dy);
           
           if (dist < maxDist) {
-            // Very thin lines (0.3) to handle the high density cleanly
             ctx!.strokeStyle = `rgba(0,200,255,${1 - dist / maxDist})`; 
-            ctx!.lineWidth = 0.3; 
+            ctx!.lineWidth = isTouch ? 0.8 : 0.3; 
             ctx!.beginPath();
             ctx!.moveTo(pa.x, pa.y);
             ctx!.lineTo(pb.x, pb.y);
@@ -135,6 +132,7 @@ export const NeuralNetworkBackground: React.FC = () => {
         
         if (dist < mouse.radius) {
           ctx!.strokeStyle = `rgba(255,136,0,${1 - dist / mouse.radius})`;
+          // Reduced line width slightly (1.2) for cleaner look
           ctx!.lineWidth = 1.2;
           ctx!.beginPath();
           ctx!.moveTo(p.x, p.y);

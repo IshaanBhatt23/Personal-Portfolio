@@ -4,12 +4,10 @@ export const NeuralNetworkBackground: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rafRef = useRef<number | null>(null);
 
-  // CHANGED: Removed "!isTouch" here so it stays enabled on phones
   const [enabled, setEnabled] = useState(true);
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    // We only disable if the user specifically requests reduced motion
     const update = () => setEnabled(!mq.matches);
     update();
     mq.addEventListener?.("change", update);
@@ -23,44 +21,43 @@ export const NeuralNetworkBackground: React.FC = () => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Check if device is touch (Phone/Tablet)
     const isTouch = "ontouchstart" in window || (navigator as any).maxTouchPoints > 0;
 
-    // DPI-aware sizing
     const setCanvasSize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2); // cap DPR for perf
+      const dpr = 1; 
       const { innerWidth: w, innerHeight: h } = window;
       canvas.style.width = `${w}px`;
       canvas.style.height = `${h}px`;
       canvas.width = Math.floor(w * dpr);
       canvas.height = Math.floor(h * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // draw in CSS pixels
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0); 
     };
 
     setCanvasSize();
 
-    // Mouse tracking
-    // CHANGED: Start way off-screen (-9999) so no lines appear by default
-    const mouse = { x: -9999, y: -9999, radius: 140 };
+    // Mouse interaction radius
+    const mouse = { x: -9999, y: -9999, radius: 220 };
 
     const onMove = (e: MouseEvent) => {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
     };
 
-    // CHANGED: Only enable interaction if it is NOT a touch device (PC only)
     if (!isTouch) {
       window.addEventListener("mousemove", onMove, { passive: true });
     }
 
-    // Particles
     class Particle {
       x: number;
       y: number;
+      vx: number;
+      vy: number;
       size: number;
       constructor(x: number, y: number, size: number) {
         this.x = x;
         this.y = y;
+        this.vx = (Math.random() - 0.5) * 0.5;
+        this.vy = (Math.random() - 0.5) * 0.5;
         this.size = size;
       }
       draw() {
@@ -68,6 +65,12 @@ export const NeuralNetworkBackground: React.FC = () => {
         ctx!.beginPath();
         ctx!.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx!.fill();
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < 0 || this.x > window.innerWidth) this.vx *= -1;
+        if (this.y < 0 || this.y > window.innerHeight) this.vy *= -1;
       }
     }
 
@@ -77,9 +80,15 @@ export const NeuralNetworkBackground: React.FC = () => {
       particles = [];
       const area = window.innerWidth * window.innerHeight;
 
-      // Density tuned for devices (fewer on phones)
-      const base = area / 15000;
-      const count = Math.max(40, Math.min(base, window.innerWidth < 640 ? 80 : 200));
+      // --- ULTRA DENSITY ---
+      // area / 7000 = Very high density
+      const base = area / 7000;
+      
+      // Increased Max Limit significantly for PC
+      const maxParticles = isTouch ? 110 : 400;
+      
+      const count = Math.max(80, Math.min(base, maxParticles));
+
       for (let i = 0; i < Math.floor(count); i++) {
         const x = Math.random() * window.innerWidth;
         const y = Math.random() * window.innerHeight;
@@ -88,9 +97,10 @@ export const NeuralNetworkBackground: React.FC = () => {
       }
     };
 
-    // Connect nearby particles
     const connectParticles = () => {
-      const maxDist = 120;
+      // 150 = Good reach to prevent solo nodes
+      const maxDist = 150; 
+
       for (let a = 0; a < particles.length; a++) {
         const pa = particles[a];
         for (let b = a + 1; b < particles.length; b++) {
@@ -98,9 +108,11 @@ export const NeuralNetworkBackground: React.FC = () => {
           const dx = pa.x - pb.x;
           const dy = pa.y - pb.y;
           const dist = Math.hypot(dx, dy);
+          
           if (dist < maxDist) {
-            ctx!.strokeStyle = `rgba(0,200,255,${1 - dist / maxDist})`;
-            ctx!.lineWidth = 0.5;
+            // Very thin lines (0.3) to handle the high density cleanly
+            ctx!.strokeStyle = `rgba(0,200,255,${1 - dist / maxDist})`; 
+            ctx!.lineWidth = 0.3; 
             ctx!.beginPath();
             ctx!.moveTo(pa.x, pa.y);
             ctx!.lineTo(pb.x, pb.y);
@@ -114,16 +126,16 @@ export const NeuralNetworkBackground: React.FC = () => {
       ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
       for (const p of particles) {
+        p.update();
         p.draw();
 
-        // Orange line from mouse to nearby particles
-        // This will only happen if mouse is updated (which we disabled on touch)
         const dx = mouse.x - p.x;
         const dy = mouse.y - p.y;
         const dist = Math.hypot(dx, dy);
+        
         if (dist < mouse.radius) {
           ctx!.strokeStyle = `rgba(255,136,0,${1 - dist / mouse.radius})`;
-          ctx!.lineWidth = 1;
+          ctx!.lineWidth = 1.2;
           ctx!.beginPath();
           ctx!.moveTo(p.x, p.y);
           ctx!.lineTo(mouse.x, mouse.y);
@@ -146,7 +158,6 @@ export const NeuralNetworkBackground: React.FC = () => {
 
     return () => {
       window.removeEventListener("resize", onResize);
-      // Clean up mouse listener only if we added it
       if (!isTouch) {
         window.removeEventListener("mousemove", onMove);
       }

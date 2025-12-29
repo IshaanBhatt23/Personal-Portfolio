@@ -24,7 +24,7 @@ const Experience = () => {
     {
       title: "AWS Cloud Architecture Intern",
       company: "AICTE Virtual Internship",
-      period: "Oct 2024 – Dec 2024",
+      period: "October 2024 – December 2024",
       location: "Virtual",
       type: "Certification",
       achievements: [

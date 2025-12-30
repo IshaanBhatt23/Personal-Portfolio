@@ -9,6 +9,7 @@ import Contact from "../components/Contact";
 import { NeuralNetworkBackground } from "@/components/NeuralNetworkBackground";
 import { CustomCursor } from "@/components/CustomCursor";
 import Chatbot from "@/components/Chatbot";
+import FloatingTerminal from "@/components/FloatingTerminal"; // <--- IMPORT THIS
 
 // SEO data for the Developer personality
 const developerSchema = {
@@ -55,7 +56,7 @@ const musicianSchema = {
     addressCountry: "IN",
   },
   sameAs: [
-    "https://www.youtube.com/@ishaanbhatt", // update to your actual links
+    "https://www.youtube.com/@ishaanbhatt", 
     "https://soundcloud.com/ishaanbhatt",
   ],
   knowsAbout: [
@@ -129,7 +130,10 @@ const Index = () => {
         <Skills />
         <Education />
         <Contact />
+        
+        {/* Floating Widgets */}
         <Chatbot />
+        <FloatingTerminal /> {/* <--- ADDED HERE */}
       </div>
 
       {/* Fancy cursor only on non-touch and when motion is allowed */}

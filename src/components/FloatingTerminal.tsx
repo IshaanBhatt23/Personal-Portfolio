@@ -63,7 +63,6 @@ const FloatingTerminal = () => {
       e.stopPropagation();
     }
     setIsOpen(false);
-    // We don't blur here, we just hide the container
   };
 
   // 5. COMMAND LOGIC
@@ -84,21 +83,76 @@ const FloatingTerminal = () => {
         response = (
           <div className="flex flex-col gap-1 my-2">
             <div className="grid grid-cols-[100px_1fr] gap-4 text-gray-300">
-              <span className="text-white">ABOUT</span> <span>Display bio information</span>
+              <span className="text-white">about</span> <span>Display bio information</span>
             </div>
             <div className="grid grid-cols-[100px_1fr] gap-4 text-gray-300">
-              <span className="text-white">STACK</span> <span>List technical skills</span>
+              <span className="text-white">stack</span> <span>List technical skills</span>
             </div>
             <div className="grid grid-cols-[100px_1fr] gap-4 text-gray-300">
-              <span className="text-white">PROJECTS</span> <span>Show featured works</span>
+              <span className="text-white">projects</span> <span>Show featured works</span>
             </div>
             <div className="grid grid-cols-[100px_1fr] gap-4 text-gray-300">
-              <span className="text-white">CLEAR</span> <span>Clear the screen</span>
+              <span className="text-white">resume</span> <span>Download PDF Resume</span>
+            </div>
+            <div className="grid grid-cols-[100px_1fr] gap-4 text-gray-300">
+              <span className="text-white">contact</span> <span>Display contact information</span>
+            </div>
+            <div className="grid grid-cols-[100px_1fr] gap-4 text-gray-300">
+              <span className="text-white">clear</span> <span>Clear the screen</span>
             </div>
             <div className="h-2"></div>
           </div>
         );
         break;
+      
+      case "resume":
+        // Trigger Download
+        const link = document.createElement("a");
+        link.href = "/Ishaan-Bhatt_Resume.pdf"; // <--- ENSURE FILE IS IN PUBLIC FOLDER
+        link.download = "Ishaan_Bhatt_Resume.pdf";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        response = (
+          <div className="my-2 text-green-400">
+            <div>Initiating secure file transfer...</div>
+            <div>[====================] 100%</div>
+            <div className="text-gray-400">Resume downloaded successfully to local machine.</div>
+            <div className="h-2"></div>
+          </div>
+        );
+        break;
+
+      case "contact":
+        response = (
+          <div className="flex flex-col gap-1 my-2 text-gray-300">
+            <div className="mb-2 text-white">Contact Information</div>
+            
+            <div className="grid grid-cols-[100px_1fr] gap-4">
+              <span className="text-gray-400">Email</span> 
+              <a href="mailto:ishaanbhatt2004@gmail.com" className="text-blue-400 hover:underline">ishaanbhatt2004@gmail.com</a>
+            </div>
+            
+            <div className="grid grid-cols-[100px_1fr] gap-4">
+              <span className="text-gray-400">Phone</span> 
+              <a href="tel:+919328435711" className="text-blue-400 hover:underline">+91 9328435711</a>
+            </div>
+            
+            <div className="grid grid-cols-[100px_1fr] gap-4">
+              <span className="text-gray-400">LinkedIn</span> 
+              <a href="https://linkedin.com/in/ishaan-bhatt-110a93256" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">linkedin.com/in/ishaan-bhatt</a>
+            </div>
+
+            <div className="grid grid-cols-[100px_1fr] gap-4">
+              <span className="text-gray-400">Instagram</span> 
+              <a href="https://instagram.com/ishaan79._" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">instagram.com/ishaan79._</a>
+            </div>
+            <div className="h-2"></div>
+          </div>
+        );
+        break;
+
       case "about":
         response = (
           <div className="my-2 text-gray-300">
@@ -107,6 +161,7 @@ const FloatingTerminal = () => {
           </div>
         );
         break;
+
       case "stack":
         response = (
           <div className="my-2 text-gray-300">
@@ -115,6 +170,7 @@ const FloatingTerminal = () => {
           </div>
         );
         break;
+
       case "projects":
         response = (
           <div className="flex flex-col gap-1 my-2">
@@ -124,10 +180,12 @@ const FloatingTerminal = () => {
           </div>
         );
         break;
+
       case "clear":
         setOutput([]);
         setInput("");
         return;
+
       default:
         response = (
           <div className="my-2 text-red-400">
@@ -181,7 +239,7 @@ const FloatingTerminal = () => {
         </Button>
       </div>
 
-      {/* TERMINAL WINDOW - CSS VISIBILITY TOGGLE (No Unmounting) */}
+      {/* TERMINAL WINDOW - CSS VISIBILITY TOGGLE */}
       <div
         className={`
           fixed bottom-44 right-6 w-[600px] z-50 hidden md:block

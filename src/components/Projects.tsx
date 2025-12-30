@@ -4,7 +4,7 @@ import Tilt from "react-parallax-tilt";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Github } from "lucide-react";
+import { Github, Globe } from "lucide-react"; 
 
 const Projects = () => {
   const projects = [
@@ -15,7 +15,9 @@ const Projects = () => {
       tech: ["Python", "TypeScript", "React", "Node.js", "SAP", "LLaMA 3", "RAG"],
       category: ["Deployed", "FullStack"],
       metrics: "Automation and Chatbot",
-      github: "https://sap-chatflow.vercel.app/",
+      // ADDED: Demo link
+      demo: "https://sap-chatflow.vercel.app/",
+      github: "https://github.com/IshaanBhatt23/sap-chatflow",
       highlights: ["SAP Chatbot", "RAG", "LLM", "FullStack", "Automation"],
     },
     {
@@ -36,7 +38,7 @@ const Projects = () => {
     },
     {
       title: "Generative 3D Jewellery Design",
-      subtitle: "2D→3D pipeline with exportable .obj outputs",
+      subtitle: "2D → 3D pipeline with exportable .obj outputs",
       description:
         "Generate 3D jewelry models from 2D designs using generative AI techniques",
       tech: ["PyTorch3D", "Point-E", "Trimesh", "Python"],
@@ -56,7 +58,6 @@ const Projects = () => {
       github: "https://github.com/IshaanBhatt23/Smart-Product-Pricing",
       highlights: ["Text and image feature fusion", "LightGBM regression", "Top 2.73% global rank"],
     },
-
     {
       title: "Document Summarizer & Q/A",
       subtitle: "Transformer-based document processing with Q/A capabilities",
@@ -170,7 +171,6 @@ const Projects = () => {
     [projects, selectedCategory]
   );
 
-  // Environment flags: reduce motion & touch devices
   const [isTouch, setIsTouch] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
@@ -187,7 +187,6 @@ const Projects = () => {
   const tiltEnabled = !isTouch && !prefersReducedMotion;
 
   return (
-    // CHANGE: Reduced vertical padding (py-10 for mobile)
     <section id="projects" className="py-10 md:py-24 scroll-mt-24">
       <div className="container mx-auto px-4 sm:px-6">
         <motion.div
@@ -195,7 +194,6 @@ const Projects = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.6 }}
-          // CHANGE: Reduced bottom margin (mb-8 for mobile)
           className="text-center mb-8 sm:mb-16"
         >
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6">
@@ -206,13 +204,11 @@ const Projects = () => {
           </p>
         </motion.div>
 
-        {/* Category Filter */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ delay: 0.1 }}
-          // CHANGE: Reduced bottom margin (mb-8 for mobile)
           className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-8 sm:mb-12"
         >
           {categories.map((category) => (
@@ -228,7 +224,6 @@ const Projects = () => {
           ))}
         </motion.div>
 
-        {/* Projects Grid with Layout Animation */}
         <motion.div
           layout
           transition={{ layout: { duration: 0.4, type: "spring" } }}
@@ -243,18 +238,24 @@ const Projects = () => {
                 viewport={{ once: true, amount: 0.15 }}
                 transition={{ delay: index * 0.03, duration: 0.35, type: "spring" }}
                 whileHover={!isTouch ? { y: -6 } : undefined}
-                className="h-full"
+                className="h-full w-full"
               >
-                <Card className="project-card h-full transition-all duration-300 group bg-black border border-neutral-800">
+                {/* FIXED BORDER ISSUE:
+                   The Card is now transparent. The visual border and background
+                   are handled by the TILT wrapper (if enabled) or a wrapper div below.
+                   This ensures the border isn't clipped by the rounded corners.
+                */}
+                <Card className="h-full w-full flex flex-col bg-transparent border-0 shadow-none">
                   <CardHeader>
                     <div className="flex justify-between items-start mb-4 gap-3">
                       <Badge variant="secondary" className="bg-accent/10 text-accent">
                         {project.category.join(" / ")}
                       </Badge>
                       <div className="flex gap-2">
+                        {/* Top-right Icon Logic */}
                         <Button size="sm" variant="ghost" className="p-2" asChild>
-                          <a href={project.github} target="_blank" rel="noopener noreferrer">
-                            <Github className="w-4 h-4" />
+                          <a href={project.demo || project.github} target="_blank" rel="noopener noreferrer">
+                            {project.demo ? <Globe className="w-4 h-4" /> : <Github className="w-4 h-4" />}
                           </a>
                         </Button>
                       </div>
@@ -271,12 +272,12 @@ const Projects = () => {
                     <p className="text-xs sm:text-sm text-purple font-semibold">{project.metrics}</p>
                   </CardHeader>
 
-                  <CardContent className="pt-0">
+                  <CardContent className="pt-0 flex-grow flex flex-col">
                     <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
                       {project.description}
                     </p>
 
-                    <div className="space-y-4">
+                    <div className="space-y-4 flex-grow">
                       <div className="flex flex-wrap gap-2">
                         {project.tech.map((tech) => (
                           <Badge key={tech} variant="outline" className="text-[10px] sm:text-xs">
@@ -296,22 +297,70 @@ const Projects = () => {
                           </div>
                         ))}
                       </div>
+                    </div>
 
-                      <div className="flex gap-2 pt-4">
-                        <Button size="sm" className="flex-1 tap-target" asChild>
+                    {/* DUAL BUTTON LOGIC */}
+                    <div className="flex flex-col gap-3 pt-4 mt-auto">
+                      {project.demo ? (
+                        <>
+                          {/* 1. View Live App (Cyan) */}
+                          <Button 
+                            asChild
+                            className="w-full py-5 rounded-xl font-bold text-black 
+                              bg-cyan-400 hover:bg-cyan-300 
+                              hover:shadow-[0_0_20px_rgba(34,211,238,0.6)] 
+                              transition-all duration-300 active:scale-95 tap-target"
+                          >
+                            <a href={project.demo} target="_blank" rel="noopener noreferrer">
+                              <Globe className="w-5 h-5 mr-2" />
+                              View Live App
+                            </a>
+                          </Button>
+                          
+                          {/* 2. View Code (Outline) */}
+                          <Button 
+                            asChild
+                            variant="outline"
+                            className="w-full py-5 rounded-xl font-bold 
+                              border-white/20 bg-transparent hover:bg-white/10
+                              text-white transition-all duration-300 active:scale-95 tap-target"
+                          >
+                            <a href={project.github} target="_blank" rel="noopener noreferrer">
+                              <Github className="w-5 h-5 mr-2" />
+                              View Repository
+                            </a>
+                          </Button>
+                        </>
+                      ) : (
+                        // Standard Single Button
+                        <Button 
+                          asChild
+                          className="w-full py-5 rounded-xl font-bold text-black 
+                            bg-cyan-400 hover:bg-cyan-300 
+                            hover:shadow-[0_0_20px_rgba(34,211,238,0.6)] 
+                            transition-all duration-300 active:scale-95 tap-target"
+                        >
                           <a href={project.github} target="_blank" rel="noopener noreferrer">
-                            <Github className="w-4 h-4 mr-2" />
+                            <Github className="w-5 h-5 mr-2" />
                             See Project
                           </a>
                         </Button>
-                      </div>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
               </motion.div>
             );
 
-            // Disable Tilt on touch / reduced motion for perf + UX
+            // COMMON STYLES moved to variable to reuse for Tilt and Non-Tilt
+            const glassClasses = `
+              rounded-2xl overflow-hidden h-full flex flex-col
+              bg-white/5 backdrop-blur-md border border-white/10
+              transition-colors duration-300 group
+              hover:border-cyan-500/30 hover:bg-white/10 
+              hover:shadow-lg hover:shadow-cyan-500/10
+            `;
+
             return tiltEnabled ? (
               <Tilt
                 key={project.title}
@@ -319,17 +368,21 @@ const Projects = () => {
                 tiltMaxAngleY={8}
                 perspective={1000}
                 glareEnable
-                glareMaxOpacity={0.25}
+                glareMaxOpacity={0.15}
                 glarePosition="all"
-                glareColor="hsl(var(--primary))"
+                glareColor="rgba(255,255,255,0.3)"
                 gyroscope={false}
                 scale={1.02}
                 transitionSpeed={1200}
+                // Border and BG are applied here to avoid clipping
+                className={glassClasses}
               >
                 {CardInner}
               </Tilt>
             ) : (
-              <div key={project.title}>{CardInner}</div>
+              <div key={project.title} className={glassClasses}>
+                {CardInner}
+              </div>
             );
           })}
         </motion.div>

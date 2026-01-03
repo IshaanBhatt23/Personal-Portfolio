@@ -11,7 +11,7 @@ const Experience = () => {
     {
       title: "AI/ML Intern",
       company: "Katch GO",
-      period: "June 2025 – December 2025",
+      period: "June 2025 – November 2025",
       location: "On-Site",
       type: "Internship",
       achievements: [

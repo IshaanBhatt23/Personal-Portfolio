@@ -83,6 +83,14 @@ const Education = () => {
         credentialId: "0427bb1e-0941-4285-b5d2-f539e6a2bc04",
         skills: ["Data Analysis", "Machine Learning", "AI", "Digital Transformation", "Deep Learning", "Cloud Computing", "Data Literacy", "Big Data", "Data Mining", "Data-driven Decision Making"]
     },
+    
+    {
+        title: "Data Analysis with Python",
+        issuer: "IBM",
+        date: "Jan 2026",
+        credentialId: "BDV2Q5RQ1YTI",
+        skills: ["Python Programming", "Data Cleansing", "Regression Analysis", "NumPy", "Pandas (Python Package)", "Predictive Modeling", "Model Evaluation", "Scikit Learn (Machine Learning Library)", "Data Preprocessing", "Data Transformation", "Matplotlib", "Data Import/Export"]
+    },
     {
         title: "Data Science Project Capstone: Predicting Bicycle Rental",
         issuer: "University of London",

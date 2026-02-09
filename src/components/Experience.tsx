@@ -37,7 +37,7 @@ const Experience = () => {
     {
       title: "Country Ambassador",
       company: "Global AI Hackathon",
-      collaboration: "(in collaboration with MIT Sloan AI Club)",
+      collaboration: "(in collaboration with MIT Sloan AI Club and Harvard Kennedy School)",
       period: "July 2025 – Present",
       location: "India",
       type: "Leadership",

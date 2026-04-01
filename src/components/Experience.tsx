@@ -8,6 +8,21 @@ const Experience = () => {
   const prefersReducedMotion = useReducedMotion();
 
   const experiences = [
+        {
+      title: "Product & Consulting Intern",
+      company: "Blue Machines AI (Apna Group)",
+      period: "March 2026 - Present",
+      location: "On-Site",
+      type: "Internship",
+      achievements: [  
+        "Built a multilingual (English, Hindi, Gujarati) voice-based career counselling bot for a high-impact confidential deployment",
+        "Led Gujarati language pipeline development including prompt design, pronunciation tuning, and response optimization",
+        "Contributed to development of a multilingual conversational AI system supporting English + Hindi + regional language, improving accessibility for diverse user segments",
+        "Worked on LLM fine-tuning and prompt engineering to enhance response accuracy, tone, pronunciation and contextual understanding",
+        "Collaborated with cross-functional teams to design and iterate on conversational flows for real-world deployment",
+      ],
+      skills: ["LLM", "Prompt Engineering", "Product Management", "LLM Training", "Fine Tuning"],
+    },
     {
       title: "AI/ML Intern",
       company: "Katch GO",

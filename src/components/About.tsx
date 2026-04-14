@@ -293,8 +293,7 @@ const About: React.FC<AboutProps> = ({ isMusicMode }) => {
                     </p>
                   ) : (
                     <p className="text-muted-foreground leading-relaxed">
-                      Final-year Computer Science student at KIIT with a focus on machine learning,
-                      data analytics and audio-tech. 
+                      CS graduate (KIIT, 2026) with a focus on machine learning, data analytics, AI products and audio-tech. 
                     </p>
                   )}
                 </CardContent>

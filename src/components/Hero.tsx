@@ -430,7 +430,7 @@ const Hero: React.FC<HeroProps> = ({ isMusicMode = false, setIsMusicMode = () =>
               >
                 {isMusicMode
                   ? "Beatboxer & Electronic Music Producer"
-                  : "AI / ML Developer & Audio-Tech Enthusiast"}
+                  : "AI Products & AI / ML Developer"}
               </motion.span>
             </AnimatePresence>
           </motion.h2>

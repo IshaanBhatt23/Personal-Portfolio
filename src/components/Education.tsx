@@ -11,7 +11,6 @@ const Education = () => {
       degree: "B.Tech Computer Science",
       institution: "KIIT University",
       period: "2022 – 2026",
-      status: "Final Year",
       location: "Bhubaneswar, India"
     }
   ];

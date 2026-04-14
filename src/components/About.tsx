@@ -175,18 +175,17 @@ const About: React.FC<AboutProps> = ({ isMusicMode }) => {
                     I&apos;m a{" "}
                     <strong className="text-foreground">
                       <EphemeralHighlight isMusicMode={isMusicMode}>
-                        B.Tech (CSE) student (2026)
+                        CS graduate (KIIT, 2026)
                       </EphemeralHighlight>
                     </strong>{" "}
-                    passionate about applying AI/ML to real-world problems, especially at the
-                    intersection of{" "}
+                    passionate about building AI-powered products that solve real problems. I combine
+                    PM thinking with hands-on ML depth — from{" "}
                     <strong className="text-foreground">
                       <EphemeralHighlight isMusicMode={isMusicMode}>
-                        audio and vision
+                        LLMs and voice AI
                       </EphemeralHighlight>
                     </strong>
-                    . I enjoy turning messy data into production-ready models and interactive
-                    demos that people can experience.
+                    {" "}to shipped, production-ready systems that create measurable impact.
                   </p>
                 )}
               </motion.div>
